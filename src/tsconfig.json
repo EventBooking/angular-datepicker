@@ -10,8 +10,7 @@
   },
   "files": [
     "globals.ts",
-    "utilities/angular.ts",
-    "utilities/arrayUtils.ts",
+    "angular.ts",
     "app.ts",
     "date-picker.ts",
     "date-picker-service.ts"

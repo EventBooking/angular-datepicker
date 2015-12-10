@@ -7,10 +7,6 @@ module Angular {
             this.module = angular.module(name, modules);
         }
 
-        static get(name): Module {
-            return angular.module(name);
-        }
-
         config(appConfig) {
             this.module.config(appConfig);
             return this;

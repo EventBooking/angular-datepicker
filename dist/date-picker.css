@@ -124,8 +124,6 @@
   width: 40px;
   height: 40px;
   text-align: center;
-  font-size: 20px;
-  font-size: 1.25rem;
   cursor: pointer;
   position: relative;
 }
@@ -145,8 +143,8 @@
 .datePickerNav-prev:active,
 .datePickerNav-next:active {
   color: #2A8CA7;
-  border-left-color: #8DD0E2;
-  border-right-color: #8DD0E2;
+  border-left-color: #2A8CA7;
+  border-right-color: #2A8CA7;
 }
 .datePickerNav-prev:active:before,
 .datePickerNav-next:active:before,
@@ -214,15 +212,18 @@
 }
 .datePickerDays-day.is-today {
   color: #F59C3D;
+  background-color: #fff;
 }
 .datePickerDays-day.not-in-month {
   color: #E2E1DF;
+  background-color: #fff;
 }
 .datePickerDays-day.is-highlighted {
   color: #6B6861;
   background-color: #F5F5F4;
 }
 .datePickerDays-day:hover {
+  color: #fff;
   background-color: #8DD0E2;
 }
 .datePickerDays-day:active,
@@ -275,14 +276,18 @@
 }
 .datePickerMonths-name.is-current-month {
   color: #F59C3D;
+  background-color: #fff;
 }
 .datePickerMonths-name.is-selected {
+  color: #8B877E;
   background-color: #F5F5F4;
 }
 .datePickerMonths-name:hover {
   color: #4BB5D2;
+  background-color: #fff;
 }
 .datePickerMonths-name:active {
+  color: #fff;
   background-color: #8DD0E2;
 }
 /*datePickerYears*/
@@ -326,14 +331,18 @@
 }
 .datePickerYears-year.is-current-year {
   color: #F59C3D;
+  background-color: #fff;
 }
 .datePickerYears-year.is-selected {
+  color: #8B877E;
   background-color: #F5F5F4;
 }
 .datePickerYears-year:hover {
   color: #4BB5D2;
+  background-color: #fff;
 }
 .datePickerYears-year:active {
+  color: #fff;
   background-color: #8DD0E2;
 }
 /*datepicker-dropdown*/
@@ -373,16 +382,3 @@
   border-right: 14px solid transparent;
   border-bottom: 14px solid #fff;
 }
-
-.clearfix {
-  zoom: 1;
-}
-.clearfix:before,
-.clearfix:after {
-  content: "";
-  display: table;
-}
-.clearfix:after {
-  clear: both;
-}
-

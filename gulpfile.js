@@ -20,7 +20,7 @@ function html() {
 gulp.task('html', html);
 
 function styles() {
-	gulp.src(['src/**/*.less'])
+	gulp.src(['src/assets.less'])
 		.pipe(less())
 		.pipe(autoprefixer())
 		.pipe(concat('date-picker.css'))

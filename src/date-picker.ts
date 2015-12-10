@@ -1,6 +1,4 @@
 
-import ArrayUtils = Arrays.ArrayUtils;
-
 module DatePickerModule {
 
     enum DatePickerView {
@@ -168,9 +166,13 @@ module DatePickerModule {
         isHighlighted(day: IDatePickerDay) {
             if (this.highlighted == null)
                 return false;
-            return ArrayUtils.contains(this.highlighted, value => {
-                return moment(value).isSame(day.value, 'day');
-            });
+            
+            for (var i = 0; i < this.highlighted.length; i++) {
+                var value = this.highlighted[i];
+                if (moment(value).isSame(day.value, 'day'))
+                    return true;
+            }
+            return false;
         }
 
         selecting(days: IDatePickerDay[]) {
