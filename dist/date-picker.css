@@ -64,26 +64,26 @@
   position: absolute;
   width: 0;
   height: 0;
-  top: calc(50% - 8px);
+  top: calc(50% - 6px);
   left: auto;
   right: auto;
   bottom: auto;
 }
 .datePickerNav-prev:before {
-  left: -8px;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 8px solid #E2E1DF;
+  left: -6px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid #E2E1DF;
 }
 .datePickerNav-prev:after {
-  left: -7px;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 8px solid #8B877E;
+  left: -5px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-right: 6px solid #8B877E;
 }
 .datePickerNav-prev:after,
 .datePickerNav-prev:before {
-  left: calc(50% - 8px);
+  left: calc(50% - 6px);
 }
 .datePickerNav-next {
   float: right;
@@ -96,26 +96,26 @@
   position: absolute;
   width: 0;
   height: 0;
-  top: calc(50% - 8px);
+  top: calc(50% - 6px);
   left: auto;
   right: auto;
   bottom: auto;
 }
 .datePickerNav-next:before {
-  right: -8px;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-left: 8px solid #E2E1DF;
+  right: -6px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 6px solid #E2E1DF;
 }
 .datePickerNav-next:after {
-  right: -7px;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-left: 8px solid #8B877E;
+  right: -5px;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 6px solid #8B877E;
 }
 .datePickerNav-next:after,
 .datePickerNav-next:before {
-  right: calc(50% - 8px);
+  right: calc(50% - 6px);
 }
 .datePickerNav-prev,
 .datePickerNav-next {
