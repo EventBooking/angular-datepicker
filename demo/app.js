@@ -17,6 +17,6 @@ function TestController() {
 	this.highlighted = ['2015-12-10', '2015-12-12', '2015-12-13'];
 }
 
-angular.module("demo", ["ngDatePicker"])
+angular.module("demo", ["ngAnimate", "ngDatePicker"])
 	.config(Config)
 	.run(Run);

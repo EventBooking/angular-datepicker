@@ -355,6 +355,14 @@
   display: none;
   z-index: 999;
 }
+.datepicker-dropdown.ng-enter,
+.datepicker-dropdown.ng-leave,
+.datepicker-dropdown.ng-animate {
+  -webkit-transition: none !important;
+          transition: none !important;
+  -webkit-animation: none 0s !important;
+          animation: none 0s !important;
+}
 .datepicker-dropdown.datepicker-open {
   display: block;
 }

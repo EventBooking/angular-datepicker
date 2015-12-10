@@ -1,5 +1,16 @@
-.scrollTest {
-	height: 250px;
-	width: 250px;
-	overflow: auto;
+.sidebar {
+	position: absolute;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	width: 400px;
+	padding: 20px;
+	background-color: #fff;
+	border-left: solid 1px #ccc;
+}
+
+.sidebar-show {
+	position: absolute;
+	right: 0;
+	top: 0;
 }

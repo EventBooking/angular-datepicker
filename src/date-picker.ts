@@ -166,7 +166,7 @@ module DatePickerModule {
         isHighlighted(day: IDatePickerDay) {
             if (this.highlighted == null)
                 return false;
-            
+
             for (var i = 0; i < this.highlighted.length; i++) {
                 var value = this.highlighted[i];
                 if (moment(value).isSame(day.value, 'day'))
@@ -277,9 +277,9 @@ module DatePickerModule {
     }
 
     class DatePickerDirective {
-        static $inject = ['$compile', '$templateCache', '$timeout', '$window', 'datePickerService'];
+        static $inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService'];
 
-        constructor(private $compile, private $templateCache, private $timeout, private $window, private datePickerService: IDatePickerService) { }
+        constructor(private $injector, private $compile, private $templateCache, private $timeout, private $window, private datePickerService: IDatePickerService) { }
 
         restrict = 'AE';
         require = '?ngModel';
@@ -307,6 +307,11 @@ module DatePickerModule {
 
         link = ($scope, $element, $attrs, ngModelCtrl) => {
             var ctrl: DatePickerController = $scope[this.controllerAs];
+
+            // Fixes a bug where Tether cannot correctly get width/height because of ngAnimate
+            var $animate = this.$injector.get('$animate');
+            if ($animate != null) 
+                $animate.enabled(false, $element);
 
             if ($element.is('input[type="text"]'))
                 this.linkInput($scope, $element, $attrs, ngModelCtrl);
@@ -480,15 +485,14 @@ module DatePickerModule {
                             {
                                 to: 'window',
                                 attachment: 'together',
-                                pin: true
+                                pin: ['top', 'left', 'bottom', 'right']
                             }
                         ]
                     });
                 }
-                
-                tether.position();
-                
+
                 $scope.$apply();
+                tether.position();
             });
 
             var blurTimer;
@@ -503,13 +507,13 @@ module DatePickerModule {
             });
             
             
-//             $body.on(`DOMMouseScroll.${$scope.$id} mousewheel.${$scope.$id}`, () => {
-//                 if (!ctrl.isVisible)
-//                     return;
-// 
-//                 ctrl.isVisible = false;
-//                 $scope.$apply();
-//             });
+            //             $body.on(`DOMMouseScroll.${$scope.$id} mousewheel.${$scope.$id}`, () => {
+            //                 if (!ctrl.isVisible)
+            //                     return;
+            // 
+            //                 ctrl.isVisible = false;
+            //                 $scope.$apply();
+            //             });
 
             // angular.element(this.$window).on(`resize.${$scope.$id}`, () => {
             //     ctrl.isVisible = false;

@@ -333,8 +333,9 @@ var DatePickerModule;
         return DatePickerController;
     })();
     var DatePickerDirective = (function () {
-        function DatePickerDirective($compile, $templateCache, $timeout, $window, datePickerService) {
+        function DatePickerDirective($injector, $compile, $templateCache, $timeout, $window, datePickerService) {
             var _this = this;
+            this.$injector = $injector;
             this.$compile = $compile;
             this.$templateCache = $templateCache;
             this.$timeout = $timeout;
@@ -361,6 +362,10 @@ var DatePickerModule;
             this.calendarTemplate = 'date-picker.html';
             this.link = function ($scope, $element, $attrs, ngModelCtrl) {
                 var ctrl = $scope[_this.controllerAs];
+                // Fixes a bug where Tether cannot correctly get width/height because of ngAnimate
+                var $animate = _this.$injector.get('$animate');
+                if ($animate != null)
+                    $animate.enabled(false, $element);
                 if ($element.is('input[type="text"]'))
                     _this.linkInput($scope, $element, $attrs, ngModelCtrl);
                 else if ($element.is('date-picker'))
@@ -503,13 +508,13 @@ var DatePickerModule;
                             {
                                 to: 'window',
                                 attachment: 'together',
-                                pin: true
+                                pin: ['top', 'left', 'bottom', 'right']
                             }
                         ]
                     });
                 }
-                tether.position();
                 $scope.$apply();
+                tether.position();
             });
             var blurTimer;
             $element.on("blur." + $scope.$id, function () {
@@ -620,7 +625,7 @@ var DatePickerModule;
                 });
             });
         };
-        DatePickerDirective.$inject = ['$compile', '$templateCache', '$timeout', '$window', 'datePickerService'];
+        DatePickerDirective.$inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService'];
         return DatePickerDirective;
     })();
     app.directive('datePicker', DatePickerDirective);
