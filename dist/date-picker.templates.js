@@ -1,8 +1,8 @@
 (function(module) {
 try {
-  module = angular.module('datepicker.templates');
+  module = angular.module('ngDatePicker');
 } catch (e) {
-  module = angular.module('datepicker.templates', []);
+  module = angular.module('ngDatePicker', []);
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('date-picker.html',

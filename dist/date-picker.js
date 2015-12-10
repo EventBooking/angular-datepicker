@@ -148,7 +148,7 @@ var Arrays;
     })();
     Arrays.ArrayUtils = ArrayUtils;
 })(Arrays || (Arrays = {}));
-var app = new Angular.Module("ngDatePicker", ['datepicker.templates']);
+var app = new Angular.Module("ngDatePicker", []);
 var ArrayUtils = Arrays.ArrayUtils;
 var DatePickerModule;
 (function (DatePickerModule) {

@@ -1,1 +1,1 @@
-var app = new Angular.Module("ngDatePicker", ['datepicker.templates']);
+var app = new Angular.Module("ngDatePicker", []);

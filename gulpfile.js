@@ -10,7 +10,7 @@ var gulp = require('gulp'),
 function html() {
 	gulp.src(['src/**/*.html'])
 		.pipe(html2js({
-			moduleName: 'datepicker.templates',
+			moduleName: 'ngDatePicker',
 			stripPrefix: 'directives'
 		}))
 		.pipe(concat('date-picker.templates.js'))
