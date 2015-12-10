@@ -1,0 +1,27 @@
+{
+  "name": "angular-datepicker",
+  "version": "0.0.0",
+  "homepage": "https://github.com/EventBooking/angular-datepicker",
+  "authors": [
+    "Mike Walters <mike@eventbooking.com>"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "moment": "~2.10.6",
+    "tether": "~1.1.1",
+    "jquery": "~2.1.4"
+  },
+  "devDependencies": {
+    "angular": "~1.4.8"
+  }
+}

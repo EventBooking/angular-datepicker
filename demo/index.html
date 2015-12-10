@@ -1,0 +1,46 @@
+<html ng-app="demo">
+
+	<head>
+		<link rel="stylesheet" href="../bower_components/tether/dist/css/tether.css" />
+		<link rel="stylesheet" href="../dist/date-picker.css" />
+	</head>
+	
+	<body>
+	
+		<div style="display: flex;">
+			<div>
+				<h1>Date</h1> {{vm.date}}
+	
+				<h1>Element</h1>
+				<a href="#" date-picker date="vm.date" highlighted="vm.highlighted">{{vm.date}}</a>
+	
+				<h1>Input</h1>
+				<input type="text" date-picker date="vm.date" ng-model="vm.dateModel" highlighted="vm.highlighted" />
+	
+				<h1>Inline</h1>
+				<date-picker date="vm.date" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date)"></date-picker>
+			</div>
+			<div>
+				<h1>Range</h1> {{vm.start}} - {{vm.end}}
+	
+				<h1>Element</h1>
+				<a href="#" date-picker start="vm.start" end="vm.end" highlighted="vm.highlighted">{{vm.start}}</a>
+	
+				<h1>Input</h1>
+				<input type="text" date-picker start="vm.start" end="vm.end" ng-model="vm.rangeModel" highlighted="vm.highlighted" />
+	
+				<h1>Inline</h1>
+				<date-picker start="vm.start" end="vm.end" highlighted="vm.highlighted" on-range-select="vm.onRangeSelect(start,end)"></date-picker>
+			</div>
+		</div>
+	
+		<script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+		<script type="text/javascript" src="../bower_components/moment/moment.js"></script>
+		<script type="text/javascript" src="../bower_components/tether/dist/js/tether.js"></script>
+		<script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+		<script type="text/javascript" src="../dist/date-picker.templates.js"></script>
+		<script type="text/javascript" src="../dist/date-picker.js"></script>
+		<script type="text/javascript" src="app.js"></script>
+	</body>
+
+</html>

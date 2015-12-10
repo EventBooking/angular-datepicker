@@ -1,0 +1,70 @@
+<div class="datePicker datePicker--{{datepicker.viewType}}">
+
+    <div class="datePicker-days datePickerDays">
+        <div class="datePicker-navigation datePickerNav">
+            <i class="datePickerNav-prev" ng-click="datepicker.prevMonth()"></i>
+            <i class="datePickerNav-next" ng-click="datepicker.nextMonth()"></i>
+            <span class="datePickerNav-title datePickerNav-title--selectable" ng-click="datepicker.showMonths()">
+                {{datepicker.title}}
+            </span>
+        </div>
+        <div class="datePicker-divider"></div>
+        <ul class="datePickerDays-daysOfWeek">
+            <li class="datePickerDays-dayName" ng-repeat="name in datepicker.daysOfWeek">
+                {{name}}
+            </li>
+        </ul>
+        <ul class="datePickerDays-week" ng-repeat="week in datepicker.weeks">
+            <li class="datePickerDays-day"
+                ng-repeat="day in week"
+                ng-class="{ 
+                    'is-today': day.isToday, 
+                    'not-in-month': day.isNotInMonth, 
+                    'is-selected': datepicker.isSelected(day),
+                    'is-selecting': day.isSelecting,
+                    'is-highlighted': datepicker.isHighlighted(day)
+                }">
+                {{day.date}}
+            </li>
+        </ul>
+    </div>
+
+    <div class="datePicker-months datePickerMonths">
+        <div class="datePicker-navigation datePickerNav">
+            <i class="datePickerNav-prev" ng-click="datepicker.prevYear()"></i>
+            <i class="datePickerNav-next" ng-click="datepicker.nextYear()"></i>
+            <span class="datePickerNav-title datePickerNav-title--selectable" ng-click="datepicker.showYears()">
+                {{datepicker.title}}
+            </span>
+        </div>
+        <div class="datePicker-divider"></div>
+        <ul class="datePickerMonths-row" ng-repeat="row in [[0,1,2,3],[4,5,6,7],[8,9,10,11]]">
+            <li class="datePickerMonths-name"
+                ng-repeat="col in row"
+                ng-class="{'is-current-month': datepicker.monthNames[col].isCurrentMonth}"
+                ng-click="datepicker.selectMonth(col)">
+                {{datepicker.monthNames[col].name}}
+            </li>
+        </ul>
+    </div>
+
+    <div class="datePicker-years datePickerYears">
+        <div class="datePicker-navigation datePickerNav">
+            <i class="datePickerNav-prev" ng-click="datepicker.prevRange()"></i>
+            <i class="datePickerNav-next" ng-click="datepicker.nextRange()"></i>
+            <span class="datePickerNav-title">
+                {{datepicker.title}}
+            </span>
+        </div>
+        <div class="datePicker-divider"></div>
+        <ul class="datePickerYears-row" ng-repeat="row in [[0,1,2],[3,4,5],[6,7,8]]">
+            <li class="datePickerYears-year"
+                ng-repeat="col in row"
+                ng-class="{'is-current-year': datepicker.years[col].isCurrentYear}"
+                ng-click="datepicker.selectYear(col)">
+                {{datepicker.years[col].value}}
+            </li>
+        </ul>
+    </div>
+
+</div>
