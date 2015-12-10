@@ -353,6 +353,7 @@
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
   border-radius: 2px;
   display: none;
+  z-index: 999;
 }
 .datepicker-dropdown.datepicker-open {
   display: block;

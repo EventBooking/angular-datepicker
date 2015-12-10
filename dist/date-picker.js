@@ -500,11 +500,6 @@ var DatePickerModule;
                         classPrefix: 'datepicker',
                         targetOffset: '14px 0',
                         constraints: [
-                            // {
-                            //     to: 'scrollParent',
-                            //     attachment: 'together',
-                            //     pin: true
-                            // },
                             {
                                 to: 'window',
                                 attachment: 'together',
