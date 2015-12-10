@@ -4,9 +4,6 @@ var Angular;
         function Module(name, modules) {
             this.module = angular.module(name, modules);
         }
-        Module.get = function (name) {
-            return angular.module(name);
-        };
         Module.prototype.config = function (appConfig) {
             this.module.config(appConfig);
             return this;
@@ -98,58 +95,7 @@ var Angular;
     })();
     Angular.Activator = Activator;
 })(Angular || (Angular = {}));
-var Arrays;
-(function (Arrays) {
-    var ArrayUtils = (function () {
-        function ArrayUtils() {
-        }
-        ArrayUtils.groupBy = function (array, getKey) {
-            var group = {};
-            array.forEach(function (x) {
-                var key = getKey(x);
-                if (!group[key])
-                    group[key] = [];
-                group[key].push(x);
-            });
-            return group;
-        };
-        ArrayUtils.ungroup = function (array) {
-            var items = new Array();
-            for (var name in array)
-                if (array.hasOwnProperty(name))
-                    items = items.concat(array[name]);
-            return items;
-        };
-        ArrayUtils.mapMany = function (array, map) {
-            return array.map(map).reduce(function (a, b) { return a.concat(b); });
-        };
-        ArrayUtils.firstOrDefault = function (array, where) {
-            var result = array.filter(function (x) { return where(x); });
-            if (result.length > 0)
-                return result[0];
-            return null;
-        };
-        ArrayUtils.remove = function (array, item) {
-            var index = array.indexOf(item);
-            if (index < 0)
-                return false;
-            array.splice(index, 1);
-            return true;
-        };
-        ArrayUtils.contains = function (array, predicate) {
-            for (var i = 0; i < array.length; i++) {
-                var value = array[i];
-                if (predicate(value))
-                    return true;
-            }
-            return false;
-        };
-        return ArrayUtils;
-    })();
-    Arrays.ArrayUtils = ArrayUtils;
-})(Arrays || (Arrays = {}));
 var app = new Angular.Module("ngDatePicker", []);
-var ArrayUtils = Arrays.ArrayUtils;
 var DatePickerModule;
 (function (DatePickerModule) {
     var DatePickerView;
@@ -293,9 +239,12 @@ var DatePickerModule;
         DatePickerController.prototype.isHighlighted = function (day) {
             if (this.highlighted == null)
                 return false;
-            return ArrayUtils.contains(this.highlighted, function (value) {
-                return moment(value).isSame(day.value, 'day');
-            });
+            for (var i = 0; i < this.highlighted.length; i++) {
+                var value = this.highlighted[i];
+                if (moment(value).isSame(day.value, 'day'))
+                    return true;
+            }
+            return false;
         };
         DatePickerController.prototype.selecting = function (days) {
             this.datePickerService.deselectAll(this.weeks);
@@ -551,11 +500,11 @@ var DatePickerModule;
                         classPrefix: 'datepicker',
                         targetOffset: '14px 0',
                         constraints: [
-                            {
-                                to: 'scrollParent',
-                                attachment: 'together',
-                                pin: true
-                            },
+                            // {
+                            //     to: 'scrollParent',
+                            //     attachment: 'together',
+                            //     pin: true
+                            // },
                             {
                                 to: 'window',
                                 attachment: 'together',
