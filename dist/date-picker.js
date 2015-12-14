@@ -1,5 +1,5 @@
-var Angular;
-(function (Angular) {
+var DatePickerModule;
+(function (DatePickerModule) {
     var Module = (function () {
         function Module(name, modules) {
             this.module = angular.module(name, modules);
@@ -38,7 +38,7 @@ var Angular;
         };
         return Module;
     })();
-    Angular.Module = Module;
+    DatePickerModule.Module = Module;
     // filters
     var FilterFactory = (function () {
         function FilterFactory() {
@@ -93,9 +93,9 @@ var Angular;
         };
         return Activator;
     })();
-    Angular.Activator = Activator;
-})(Angular || (Angular = {}));
-var app = new Angular.Module("ngDatePicker", []);
+    DatePickerModule.Activator = Activator;
+})(DatePickerModule || (DatePickerModule = {}));
+var app = new DatePickerModule.Module("ngDatePicker", []);
 var DatePickerModule;
 (function (DatePickerModule) {
     var DatePickerView;

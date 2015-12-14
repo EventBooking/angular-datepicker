@@ -1,4 +1,4 @@
-module Angular {
+module DatePickerModule {
 
     export class Module {
         private module;
