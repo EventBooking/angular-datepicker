@@ -13,13 +13,13 @@ bower install https://github.com/EventBooking/angular-datepicker.git#v1.0.2
 ## Assets.less
 
 ```
-@import "../../bower_components/angular-datepicker/src/date-picker-variables";
+@import "../../bower_components/angular-datepicker/dist/date-picker-variables";
 @import "variables/variables";
 
-@import "../../bower_components/angular-datepicker/src/date-picker-mixins";
+@import "../../bower_components/angular-datepicker/dist/date-picker-mixins";
 @import "mixins/mixins";
 
-@import "../../bower_components/angular-datepicker/src/date-picker";
+@import "../../bower_components/angular-datepicker/dist/date-picker";
 @import "directives/directives";
 ```
 
