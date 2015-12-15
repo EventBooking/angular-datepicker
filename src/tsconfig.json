@@ -3,7 +3,7 @@
     "noImplicitAny": false,
     "noEmitOnError": true,
     "removeComments": false,
-    "sourceMap":  true,
+    "inlineSourceMap": true,
     "inlineSources": true,
     "target": "es5",
     "out": "dist/date-picker.js"
