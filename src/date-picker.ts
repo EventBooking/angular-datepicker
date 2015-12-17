@@ -223,9 +223,17 @@ module DatePickerModule {
 
             this.showDays();
         }
+        
+        isMonth(month) {
+            return this.dateInternal.month() == month.value;
+        }
 
         setMonth(month) {
             this.dateInternal = this.dateInternal.set('month', month);
+        }
+        
+        isYear(year) {
+            return this.dateInternal.year() == year.value;
         }
 
         selectYear(idx) {

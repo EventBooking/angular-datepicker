@@ -41,7 +41,10 @@
         <ul class="datePickerMonths-row" ng-repeat="row in [[0,1,2,3],[4,5,6,7],[8,9,10,11]]">
             <li class="datePickerMonths-name"
                 ng-repeat="col in row"
-                ng-class="{'is-current-month': datepicker.monthNames[col].isCurrentMonth}"
+                ng-class="{
+                    'is-selected': datepicker.isMonth(datepicker.monthNames[col]),
+                    'is-current-month': datepicker.monthNames[col].isCurrentMonth 
+                }"
                 ng-click="datepicker.selectMonth(col)">
                 {{datepicker.monthNames[col].name}}
             </li>
@@ -60,7 +63,10 @@
         <ul class="datePickerYears-row" ng-repeat="row in [[0,1,2],[3,4,5],[6,7,8]]">
             <li class="datePickerYears-year"
                 ng-repeat="col in row"
-                ng-class="{'is-current-year': datepicker.years[col].isCurrentYear}"
+                ng-class="{
+                    'is-selected': datepicker.isYear(datepicker.years[col]),
+                    'is-current-year': datepicker.years[col].isCurrentYear
+                }"
                 ng-click="datepicker.selectYear(col)">
                 {{datepicker.years[col].value}}
             </li>

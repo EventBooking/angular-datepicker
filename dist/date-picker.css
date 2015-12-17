@@ -279,12 +279,12 @@
   background-color: #fff;
 }
 .datePickerMonths-name.is-selected {
-  color: #8B877E;
-  background-color: #F5F5F4;
+  color: #fff;
+  background-color: #4BB5D2;
 }
 .datePickerMonths-name:hover {
-  color: #4BB5D2;
-  background-color: #fff;
+  color: #fff;
+  background-color: #8DD0E2;
 }
 .datePickerMonths-name:active {
   color: #fff;
@@ -334,12 +334,12 @@
   background-color: #fff;
 }
 .datePickerYears-year.is-selected {
-  color: #8B877E;
-  background-color: #F5F5F4;
+  color: #fff;
+  background-color: #4BB5D2;
 }
 .datePickerYears-year:hover {
-  color: #4BB5D2;
-  background-color: #fff;
+  color: #fff;
+  background-color: #8DD0E2;
 }
 .datePickerYears-year:active {
   color: #fff;

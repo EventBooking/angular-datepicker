@@ -1,17 +1,19 @@
 /* global require */
 var gulp = require('gulp'),
-	exec = require('child_process').exec,
 	concat = require('gulp-concat'),
 	dest = 'dist';
 	
-function execResults(error, stdout, stderr) {
-	if (stdout != null && stdout.length > 0)
-		console.log(stdout);
-	if (stderr != null && stderr.length > 0)
-		console.log(stderr);
-	if (error != null) {
-		console.log('exec error: ' + error);
-	}
+function exec(cmd, options, fn) {
+	var proc = require('child_process').exec,
+		child = proc(cmd, options, fn);
+
+	child.stdout.on('data', function (data) {
+		console.log(data);
+	});
+
+	child.stderr.on('data', function (data) {
+		console.log(data);
+	});
 }
 
 function html() {
@@ -46,20 +48,21 @@ function styles() {
 
 gulp.task('styles', styles);
 
-function typescript(callback) {
-	exec('tsc -p src', function(error, stdout, stderr) {
-		execResults(error, stdout, stderr);
-		callback(error);
-	});
+function typescript(callback, watch) {
+	var watchFlag = watch ? ' -w' : '';
+	exec('tsc' + watchFlag + ' -p src', null, callback);
 }
+
+gulp.task('typescript', ['tsd:install', 'tsgen'], function (callback) {
+	typescript(callback);
+});
 
 gulp.task('typescript', typescript);
 
-function watch(callback) {
-	exec('tsc -p src -w', function(error, stdout, stderr) {
-		execResults(error, stdout, stderr);
-		callback(error);
-	});
+function watch() {
+	gulp.watch(['src/**/*.less'], ['styles']);
+	gulp.watch(['src/**/*.html'], ['html']);
+	typescript(null, true);
 }
 
 gulp.task('watch', watch);

@@ -49,7 +49,10 @@ module.run(['$templateCache', function($templateCache) {
     '        <ul class="datePickerMonths-row" ng-repeat="row in [[0,1,2,3],[4,5,6,7],[8,9,10,11]]">\n' +
     '            <li class="datePickerMonths-name"\n' +
     '                ng-repeat="col in row"\n' +
-    '                ng-class="{\'is-current-month\': datepicker.monthNames[col].isCurrentMonth}"\n' +
+    '                ng-class="{\n' +
+    '                    \'is-selected\': datepicker.isMonth(datepicker.monthNames[col]),\n' +
+    '                    \'is-current-month\': datepicker.monthNames[col].isCurrentMonth \n' +
+    '                }"\n' +
     '                ng-click="datepicker.selectMonth(col)">\n' +
     '                {{datepicker.monthNames[col].name}}\n' +
     '            </li>\n' +
@@ -68,7 +71,10 @@ module.run(['$templateCache', function($templateCache) {
     '        <ul class="datePickerYears-row" ng-repeat="row in [[0,1,2],[3,4,5],[6,7,8]]">\n' +
     '            <li class="datePickerYears-year"\n' +
     '                ng-repeat="col in row"\n' +
-    '                ng-class="{\'is-current-year\': datepicker.years[col].isCurrentYear}"\n' +
+    '                ng-class="{\n' +
+    '                    \'is-selected\': datepicker.isYear(datepicker.years[col]),\n' +
+    '                    \'is-current-year\': datepicker.years[col].isCurrentYear\n' +
+    '                }"\n' +
     '                ng-click="datepicker.selectYear(col)">\n' +
     '                {{datepicker.years[col].value}}\n' +
     '            </li>\n' +

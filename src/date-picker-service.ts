@@ -35,8 +35,9 @@ module DatePickerModule {
     class DatePickerMonth implements IDatePickerMonth {
         constructor(public value: number) {
             var m = moment();
+            var thisMonth = m.month();
             this.name = m.month(value).format('MMM');
-            this.isCurrentMonth = value === m.month();
+            this.isCurrentMonth = value === thisMonth;
         }
 
         name: string;

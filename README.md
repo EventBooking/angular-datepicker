@@ -7,7 +7,7 @@ bower install https://github.com/EventBooking/angular-datepicker.git --save
 
 ## Upgrading via bower
 ```
-bower install https://github.com/EventBooking/angular-datepicker.git#v1.0.2
+bower install https://github.com/EventBooking/angular-datepicker.git#latest
 ```
 
 ## Assets.less
