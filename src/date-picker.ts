@@ -103,13 +103,13 @@ module DatePickerModule {
 
         get title() {
             switch (this.view) {
-                case DatePickerView.Months:
-                    return `${this.years[0].value} - ${this.years[8].value}`;
-                case DatePickerView.Years:
-                    return this._dateInternal.format('YYYY');
                 default:
                 case DatePickerView.Days:
                     return this._dateInternal.format('MMMM YYYY');
+                case DatePickerView.Months:
+                    return this._dateInternal.format('YYYY');
+                case DatePickerView.Years:
+                    return 'select a year';
             }
         }
 

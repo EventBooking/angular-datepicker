@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/EventBooking/angular-datepicker.git"
   },
-  "author": "",
+  "author": "mike@eventbooking.com",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/EventBooking/angular-datepicker/issues"
