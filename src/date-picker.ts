@@ -223,7 +223,7 @@ module DatePickerModule {
 
             this.showDays();
         }
-        
+
         isMonth(month) {
             return this.dateInternal.month() == month.value;
         }
@@ -231,7 +231,7 @@ module DatePickerModule {
         setMonth(month) {
             this.dateInternal = this.dateInternal.set('month', month);
         }
-        
+
         isYear(year) {
             return this.dateInternal.year() == year.value;
         }
@@ -318,7 +318,7 @@ module DatePickerModule {
 
             // Fixes a bug where Tether cannot correctly get width/height because of ngAnimate
             var $animate = this.$injector.get('$animate');
-            if ($animate != null) 
+            if ($animate != null)
                 $animate.enabled(false, $element);
 
             if ($element.is('input[type="text"]'))
@@ -358,7 +358,7 @@ module DatePickerModule {
                         if (mStart.isSame(end, 'day')) {
                             text = mStart.format("L");
                         } else {
-                            text = `${mStart.format("L") } - ${mEnd.format("L") }`;
+                            text = `${mStart.format("L")} - ${mEnd.format("L")}`;
                         }
 
                     } else if (start != null) {
@@ -395,24 +395,29 @@ module DatePickerModule {
                     ctrl.date = date;
                 } else {
                     var range = this.datePickerService.inputToRange(ngModelCtrl.$viewValue);
-
-                    if (!moment(range.start).isValid()) {
+                    if (range == null) {
                         ctrl.start = null;
-                    }
-
-                    if (!moment(range.end).isValid()) {
                         ctrl.end = null;
+                    } else {
+
+                        if (!moment(range.start).isValid()) {
+                            ctrl.start = null;
+                        }
+
+                        if (!moment(range.end).isValid()) {
+                            ctrl.end = null;
+                        }
+
+                        if (ctrl.start == null || ctrl.end == null)
+                            return;
+
+                        if (moment(range.start).isSame(ctrl.start, 'day') &&
+                            moment(range.end).isSame(ctrl.end, 'day'))
+                            return;
+
+                        ctrl.start = range.start;
+                        ctrl.end = range.end;
                     }
-
-                    if (ctrl.start == null || ctrl.end == null)
-                        return;
-
-                    if (moment(range.start).isSame(ctrl.start, 'day') &&
-                        moment(range.end).isSame(ctrl.end, 'day'))
-                        return;
-
-                    ctrl.start = range.start;
-                    ctrl.end = range.end;
                 }
 
                 $scope.$apply();

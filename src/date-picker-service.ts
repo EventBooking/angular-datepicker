@@ -187,13 +187,13 @@ module DatePickerModule {
             var lang = moment.localeData();
             var formats = [
                 lang.longDateFormat("l")
-                .replace(/-/g, ' ')
-                .replace(/\//g, ' ')
-                .replace(/  /g, ' '),
+                    .replace(/-/g, ' ')
+                    .replace(/\//g, ' ')
+                    .replace(/  /g, ' '),
                 lang.longDateFormat("L")
-                .replace(/-/g, ' ')
-                .replace(/\//g, ' ')
-                .replace(/  /g, ' ')
+                    .replace(/-/g, ' ')
+                    .replace(/\//g, ' ')
+                    .replace(/  /g, ' ')
             ];
 
             var date = moment(value, formats);
@@ -201,6 +201,8 @@ module DatePickerModule {
         }
 
         inputToRange(value: string): IDatePickerRange {
+            if (value == null || !value.trim().length)
+                return null;
             var trimmed = value
                 .replace(/-/g, ' ')
                 .replace(/\//g, ' ')

@@ -427,19 +427,25 @@ var DatePickerModule;
                 }
                 else {
                     var range = _this.datePickerService.inputToRange(ngModelCtrl.$viewValue);
-                    if (!moment(range.start).isValid()) {
+                    if (range == null) {
                         ctrl.start = null;
-                    }
-                    if (!moment(range.end).isValid()) {
                         ctrl.end = null;
                     }
-                    if (ctrl.start == null || ctrl.end == null)
-                        return;
-                    if (moment(range.start).isSame(ctrl.start, 'day') &&
-                        moment(range.end).isSame(ctrl.end, 'day'))
-                        return;
-                    ctrl.start = range.start;
-                    ctrl.end = range.end;
+                    else {
+                        if (!moment(range.start).isValid()) {
+                            ctrl.start = null;
+                        }
+                        if (!moment(range.end).isValid()) {
+                            ctrl.end = null;
+                        }
+                        if (ctrl.start == null || ctrl.end == null)
+                            return;
+                        if (moment(range.start).isSame(ctrl.start, 'day') &&
+                            moment(range.end).isSame(ctrl.end, 'day'))
+                            return;
+                        ctrl.start = range.start;
+                        ctrl.end = range.end;
+                    }
                 }
                 $scope.$apply();
             });
@@ -737,6 +743,8 @@ var DatePickerModule;
             return date;
         };
         DatePickerService.prototype.inputToRange = function (value) {
+            if (value == null || !value.trim().length)
+                return null;
             var trimmed = value
                 .replace(/-/g, ' ')
                 .replace(/\//g, ' ')
