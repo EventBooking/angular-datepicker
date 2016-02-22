@@ -305,10 +305,10 @@ module DatePickerModule {
             onRangeSelect: '&',
 
             // Other
-            isSelecting: '=',
+            isSelecting: '=?',
 
             // Collection of date strings (ie. ['2012-12-01','2012-12-02']
-            highlighted: '='
+            highlighted: '=?'
         };
 
         calendarTemplate = 'date-picker.html';

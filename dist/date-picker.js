@@ -353,8 +353,8 @@ var DatePickerModule;
                 start: '=',
                 end: '=',
                 onRangeSelect: '&',
-                isSelecting: '=',
-                highlighted: '='
+                isSelecting: '=?',
+                highlighted: '=?'
             };
             this.calendarTemplate = 'date-picker.html';
             this.link = function ($scope, $element, $attrs, ngModelCtrl) {
