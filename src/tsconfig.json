@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
+    "declaration": true,
     "noImplicitAny": false,
     "noEmitOnError": true,
     "removeComments": false,
     "inlineSourceMap": true,
     "inlineSources": true,
     "target": "es5",
-    "out": "dist/date-picker.js"
+    "out": "dist/date-picker.debug.js"
   },
   "files": [
     "globals.ts",

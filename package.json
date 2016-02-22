@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc -p src"
+    "build": "tsc",
+    "tsc": "tsc -p src & gulp postTsc",
+    "tsc:w": "tsc -p src -w & gulp postTsc",
+    "gulp": "gulp"
   },
   "repository": {
     "type": "git",
@@ -18,14 +21,17 @@
   "homepage": "https://github.com/EventBooking/angular-datepicker#readme",
   "devDependencies": {
     "bower": "^1.7.0",
+    "del": "^2.2.0",
     "gulp": "^3.8.10",
     "gulp-autoprefixer": "~2.3.1",
     "gulp-bower": "0.0.10",
+    "gulp-concat": "^2.5.2",
     "gulp-less": "^3.0.3",
     "gulp-ng-html2js": "^0.2.0",
     "gulp-shell": "0.4.2",
+    "gulp-strip-comments": "^2.2.1",
     "gulp-template": "^3.0.0",
-    "gulp-concat": "^2.5.2"
+    "typescript": "^1.7.5"
   },
   "dependencies": {
     "angular": "^1.4.8",

@@ -2,7 +2,25 @@
 var gulp = require('gulp'),
 	concat = require('gulp-concat'),
 	dest = 'dist';
-	
+    
+    
+gulp.task('watch', watch);
+gulp.task('build', ['styles', 'html', 'typescript']);
+gulp.task('default', ['build']);
+gulp.task('html', html);
+gulp.task('styles', styles);
+gulp.task('typescript', ['tsd:install', 'tsgen'], function (callback) {
+	typescript(callback);
+});
+gulp.task('typescript', typescript);
+gulp.task('postTsc', postTsc);
+gulp.task('clean', clean);
+
+function clean() {
+    var del = require('del');
+    return del(dest);
+}
+
 function exec(cmd, options, fn) {
 	var proc = require('child_process').exec,
 		child = proc(cmd, options, fn);
@@ -30,8 +48,6 @@ function html() {
 		.pipe(gulp.dest(dest));
 }
 
-gulp.task('html', html);
-
 function styles() {
 	var less = require('gulp-less'),
 		autoprefixer = require('gulp-autoprefixer');
@@ -46,18 +62,10 @@ function styles() {
 		.pipe(gulp.dest(dest));
 }
 
-gulp.task('styles', styles);
-
 function typescript(callback, watch) {
-	var watchFlag = watch ? ' -w' : '';
-	exec('tsc' + watchFlag + ' -p src', null, callback);
+    var watchFlag = watch ? ':w' : '';
+    exec('npm run tsc' + watchFlag, null, callback);
 }
-
-gulp.task('typescript', ['tsd:install', 'tsgen'], function (callback) {
-	typescript(callback);
-});
-
-gulp.task('typescript', typescript);
 
 function watch() {
 	gulp.watch(['src/**/*.less'], ['styles']);
@@ -65,7 +73,16 @@ function watch() {
 	typescript(null, true);
 }
 
-gulp.task('watch', watch);
+function stripRefs(src, dest, name) {
+    var strip = require("gulp-strip-comments");
 
-gulp.task('build', ['styles', 'html', 'typescript']);
-gulp.task('default', ['build']);
+    return gulp.src(src)
+        .pipe(strip())
+        .pipe(concat(name))
+        .pipe(gulp.dest(dest));
+}
+
+function postTsc() {
+    stripRefs(dest + '/date-picker.debug.d.ts', dest, '/date-picker.d.ts');
+    stripRefs(dest + '/date-picker.debug.js', dest, '/date-picker.js');
+}
