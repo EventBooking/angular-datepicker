@@ -23,7 +23,8 @@
   "dependencies": {
     "moment": "~2.10.6",
     "tether": "~1.1.1",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "angular-typescript-module": "https://github.com/EventBooking/angular-typescript-module.git#v1.0.2"
   },
   "devDependencies": {
     "angular": "~1.4.9",

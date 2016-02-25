@@ -659,5 +659,5 @@ module DatePickerModule {
         }
     }
 
-    app.directive('datePicker', DatePickerDirective);
+    Angular.module("ngDatePicker").directive('datePicker', DatePickerDirective);
 }

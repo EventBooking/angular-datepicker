@@ -219,5 +219,5 @@ module DatePickerModule {
         }
     }
 
-    app.service('datePickerService', DatePickerService);
+    Angular.module("ngDatePicker").service('datePickerService', DatePickerService);
 }
