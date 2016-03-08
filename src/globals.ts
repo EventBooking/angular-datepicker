@@ -1,3 +1,2 @@
-declare var angular: any;
-declare var moment: any;
+/// <reference path="..\typings\main.d.ts" />
 declare var Tether: any;

@@ -443,8 +443,8 @@ module DatePickerModule {
         }
 
         getDays(range, ctrl) {
-            var start: IDatePickerDay = angular.element(range.start.target).scope().day,
-                end: IDatePickerDay = angular.element(range.end.target).scope().day;
+            var start: IDatePickerDay = angular.element(range.start.target).scope()['day'],
+                end: IDatePickerDay = angular.element(range.end.target).scope()['day'];
             var days = this.datePickerService.getRangeDays(start, end, ctrl.weeks);
             return days;
         }
@@ -452,7 +452,7 @@ module DatePickerModule {
         popover($scope, $element, $attrs) {
             var content,
                 tether,
-                $body = angular.element('body'),
+                $body:any = angular.element('body'),
                 ctrl: DatePickerController = $scope[this.controllerAs];
 
             var doNotReopen = false;
@@ -562,7 +562,7 @@ module DatePickerModule {
                 rangeBinding = `start="${this.controllerAs}.start" end="${this.controllerAs}.end" on-range-select="${this.controllerAs}.rangeSelected(start,end)"`,
                 bindings = ctrl.isSingleDate ? singleDateBinding : rangeBinding,
                 template = `<div class="datepicker-dropdown" ng-class="{'datepicker-open':${this.controllerAs}.isVisible}"><date-picker min-view="${$attrs.minView}" is-selecting="${this.controllerAs}.isSelecting" ${bindings}" highlighted="${this.controllerAs}.highlighted"></date-picker></div>`,
-                content = angular.element(template),
+                content:any = angular.element(template),
                 position = $element.position(),
                 height = $element.outerHeight(),
                 margin = ($element.outerHeight(true) - height),
@@ -598,7 +598,7 @@ module DatePickerModule {
         daySelect($scope, $element) {
             var ctrl: DatePickerController = $scope[this.controllerAs],
                 dayCss = '.datePickerDays-day',
-                $body = angular.element('body'),
+                $body:any = angular.element('body'),
                 mouseDown = `mousedown.${$scope.$id}`,
                 mouseUp = `mouseup.${$scope.$id}`;
 
@@ -622,7 +622,7 @@ module DatePickerModule {
 
         rangeSelect($scope, $element) {
             var ctrl: DatePickerController = $scope[this.controllerAs],
-                $body = angular.element('body'),
+                $body:any = angular.element('body'),
                 mouseDown = `mousedown.${$scope.$id}`,
                 mouseOver = `mouseover.${$scope.$id}`,
                 mouseUp = `mouseup.${$scope.$id}`,

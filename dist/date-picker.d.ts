@@ -1,5 +1,3 @@
-declare var angular: any;
-declare var moment: any;
 declare var Tether: any;
 declare module DatePickerModule {
 }
@@ -36,5 +34,12 @@ declare module DatePickerModule {
         selectDays(days: IDatePickerDay[]): any;
         inputToMoment(value: string): any;
         inputToRange(value: string): IDatePickerRange;
+    }
+}
+declare module DatePickerModule {
+}
+declare module DatePickerModule {
+    interface ITimePickerService {
+        parse(text: string): string;
     }
 }

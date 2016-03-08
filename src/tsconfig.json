@@ -13,6 +13,8 @@
     "globals.ts",
     "app.ts",
     "date-picker.ts",
-    "date-picker-service.ts"
+    "date-picker-service.ts",
+    "time-picker.ts",
+    "time-picker-service.ts"
   ]
 }

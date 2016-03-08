@@ -140,7 +140,7 @@ module DatePickerModule {
         }
 
         getDaysOfWeek(): string[] {
-            return moment.localeData()._weekdaysShort;
+            return moment.weekdaysShort();
         }
 
         getRangeDays(start: IDatePickerDay, end: IDatePickerDay, weeks: IDatePickerDay[][]): IDatePickerDay[] {

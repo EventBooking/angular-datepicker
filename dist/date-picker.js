@@ -373,7 +373,7 @@ var DatePickerModule;
             $element.append(content);
         };
         DatePickerDirective.prototype.getDays = function (range, ctrl) {
-            var start = angular.element(range.start.target).scope().day, end = angular.element(range.end.target).scope().day;
+            var start = angular.element(range.start.target).scope()['day'], end = angular.element(range.end.target).scope()['day'];
             var days = this.datePickerService.getRangeDays(start, end, ctrl.weeks);
             return days;
         };
@@ -603,7 +603,7 @@ var DatePickerModule;
             return days;
         };
         DatePickerService.prototype.getDaysOfWeek = function () {
-            return moment.localeData()._weekdaysShort;
+            return moment.weekdaysShort();
         };
         DatePickerService.prototype.getRangeDays = function (start, end, weeks) {
             if (end.isBefore(start)) {
@@ -670,4 +670,72 @@ var DatePickerModule;
         return DatePickerService;
     })();
     Angular.module("ngDatePicker").service('datePickerService', DatePickerService);
+})(DatePickerModule || (DatePickerModule = {}));
+var DatePickerModule;
+(function (DatePickerModule) {
+    var TimePickerController = (function () {
+        function TimePickerController(timePickerService) {
+            this.timePickerService = timePickerService;
+            this.initialized = true;
+        }
+        TimePickerController.prototype.onInit = function (ngModelCtrl) {
+            this.ngModelCtrl = ngModelCtrl;
+            this.setValue(this._time);
+        };
+        Object.defineProperty(TimePickerController.prototype, "time", {
+            get: function () {
+                return this._time;
+            },
+            set: function (value) {
+                this._time = value;
+                if (this.initialized) {
+                    this.setValue(value);
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        TimePickerController.prototype.setValue = function (value) {
+            var viewValue = this.timePickerService.parse(value);
+            this.ngModelCtrl.$setViewValue(viewValue);
+            this.ngModelCtrl.$render();
+        };
+        TimePickerController.$inject = ['timePickerService'];
+        return TimePickerController;
+    })();
+    var TimePickerDirective = (function () {
+        function TimePickerDirective() {
+            var _this = this;
+            this.restrict = 'A';
+            this.require = 'ngModel';
+            this.controller = TimePickerController;
+            this.controllerAs = 'timepicker';
+            this.bindToController = true;
+            this.scope = {
+                time: '='
+            };
+            this.link = function ($scope, $element, $attrs, ngModelCtrl) {
+                var ctrl = $scope[_this.controllerAs];
+                ctrl.onInit(ngModelCtrl);
+            };
+        }
+        TimePickerDirective.$inject = [];
+        return TimePickerDirective;
+    })();
+    Angular.module("ngDatePicker").directive('timePicker', TimePickerDirective);
+})(DatePickerModule || (DatePickerModule = {}));
+var DatePickerModule;
+(function (DatePickerModule) {
+    var TimePickerService = (function () {
+        function TimePickerService() {
+        }
+        TimePickerService.prototype.parse = function (text) {
+            var patterns = [
+                'HH:mm:ss'
+            ];
+            return moment(text, patterns).format('LT');
+        };
+        return TimePickerService;
+    })();
+    Angular.module("ngDatePicker").service('timePickerService', TimePickerService);
 })(DatePickerModule || (DatePickerModule = {}));
