@@ -678,8 +678,17 @@ var DatePickerModule;
             this.timePickerService = timePickerService;
             this.initialized = true;
         }
-        TimePickerController.prototype.onInit = function (ngModelCtrl) {
+        TimePickerController.prototype.onInit = function ($scope, $element, ngModelCtrl) {
+            var _this = this;
+            this.$scope = $scope;
             this.ngModelCtrl = ngModelCtrl;
+            $element.on("blur." + $scope.$id, function () {
+                var m = _this.timePickerService.parse(ngModelCtrl.$modelValue);
+                _this.time = m.isValid() ? m.format("HH:mm:ss") : null;
+            });
+            $scope.$on('$destroy', function () {
+                $element.off("blur." + $scope.$id);
+            });
             this.setValue(this._time);
         };
         Object.defineProperty(TimePickerController.prototype, "time", {
@@ -696,7 +705,7 @@ var DatePickerModule;
             configurable: true
         });
         TimePickerController.prototype.setValue = function (value) {
-            var viewValue = this.timePickerService.parse(value);
+            var viewValue = this.timePickerService.format(value);
             this.ngModelCtrl.$setViewValue(viewValue);
             this.ngModelCtrl.$render();
         };
@@ -716,7 +725,7 @@ var DatePickerModule;
             };
             this.link = function ($scope, $element, $attrs, ngModelCtrl) {
                 var ctrl = $scope[_this.controllerAs];
-                ctrl.onInit(ngModelCtrl);
+                ctrl.onInit($scope, $element, ngModelCtrl);
             };
         }
         TimePickerDirective.$inject = [];
@@ -731,9 +740,16 @@ var DatePickerModule;
         }
         TimePickerService.prototype.parse = function (text) {
             var patterns = [
-                'HH:mm:ss'
+                'LT',
+                'LTS',
+                'HH:mm:ss',
+                'HH:mm A'
             ];
-            return moment(text, patterns).format('LT');
+            return moment(text, patterns);
+        };
+        TimePickerService.prototype.format = function (text) {
+            var m = this.parse(text);
+            return m.isValid() ? m.format('LT') : '';
         };
         return TimePickerService;
     })();

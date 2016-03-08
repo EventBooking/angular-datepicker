@@ -40,6 +40,7 @@ declare module DatePickerModule {
 }
 declare module DatePickerModule {
     interface ITimePickerService {
-        parse(text: string): string;
+        parse(text: string): any;
+        format(text: string): string;
     }
 }
