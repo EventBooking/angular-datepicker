@@ -17,6 +17,11 @@ describe('Time picker service', function() {
             var result = timePickerService.format(null);
             chai.assert.equal(result, "");
         });
+        
+        it('allows nullable', function() {
+            var result = timePickerService.format(null);
+            chai.assert.equal(result, "");
+        });
 
         it('11:00:00 -> 11:00 AM', function() {
             var result = timePickerService.format("11:00:00");
@@ -57,9 +62,19 @@ describe('Time picker service', function() {
             var result = timePickerService.format("2am");
             chai.assert.equal(result, "2:00 AM");
         });
+        
+        it('2a -> 2:00 AM', function() {
+            var result = timePickerService.format("2a");
+            chai.assert.equal(result, "2:00 AM");
+        });
 
         it('2 pm -> 2:00 PM', function() {
             var result = timePickerService.format("2 pm");
+            chai.assert.equal(result, "2:00 PM");
+        });
+        
+        it('2p -> 2:00 PM', function() {
+            var result = timePickerService.format("2p");
             chai.assert.equal(result, "2:00 PM");
         });
 
