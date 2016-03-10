@@ -18,11 +18,6 @@ describe('Time picker service', function() {
             chai.assert.equal(result, "");
         });
         
-        it('allows nullable', function() {
-            var result = timePickerService.format(null);
-            chai.assert.equal(result, "");
-        });
-
         it('11:00:00 -> 11:00 AM', function() {
             var result = timePickerService.format("11:00:00");
             chai.assert.equal(result, "11:00 AM");
