@@ -31,11 +31,14 @@ function styles() {
     var less = require('gulp-less'),
         autoprefixer = require('gulp-autoprefixer');
 
-    return gulp.src(['src/assets.less'])
+    gulp.src(['src/assets.less'])
         .pipe(less())
         .pipe(autoprefixer())
         .pipe(concat(project.name + '.css'))
         .pipe(gulp.dest(dest));
+
+    gulp.src(['src/**/*.less'])
+        .pipe(gulp.dest(dest + '/less'));
 }
 
 function watch() {
