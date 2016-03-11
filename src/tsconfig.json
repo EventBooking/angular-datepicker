@@ -1,20 +1,23 @@
 {
-  "compilerOptions": {
-    "declaration": true,
-    "noImplicitAny": false,
-    "noEmitOnError": true,
-    "removeComments": false,
-    "inlineSourceMap": true,
-    "inlineSources": true,
-    "target": "es5",
-    "out": "dist/date-picker.debug.js"
-  },
-  "files": [
-    "globals.ts",
-    "app.ts",
-    "date-picker.ts",
-    "date-picker-service.ts",
-    "time-picker.ts",
-    "time-picker-service.ts"
-  ]
+    "compilerOptions": {
+        "declaration": true,
+        "noImplicitAny": false,
+        "noEmitOnError": true,
+        "removeComments": false,
+        "inlineSourceMap": true,
+        "inlineSources": true,
+        "target": "es5",
+        "out": "dist/angular-datepicker.js"
+    },
+    "files": [
+        "../typings/main.d.ts",
+        "app.ts",
+        "date-picker.ts",
+        "date-picker-service.ts",
+        "time-picker.ts",
+        "time-picker-service.ts"
+    ],
+    "ignore": [
+        "../typings"
+    ]
 }

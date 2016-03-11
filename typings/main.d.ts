@@ -1,3 +1,4 @@
+/// <reference path="main\ambient\angular-typescript-module\index.d.ts" />
 /// <reference path="main\ambient\angularjs-mocks\index.d.ts" />
 /// <reference path="main\ambient\angularjs\index.d.ts" />
 /// <reference path="main\ambient\assertion-error\index.d.ts" />

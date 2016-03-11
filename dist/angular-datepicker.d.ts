@@ -1,6 +1,3 @@
-/// <reference path="../typings/main.d.ts" />
-/// <reference path="../bower_components/angular-typescript-module/dist/angular-typescript-module.d.ts" />
-declare var Tether: any;
 declare module DatePickerModule {
 }
 declare module DatePickerModule {
