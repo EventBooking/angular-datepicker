@@ -18,7 +18,11 @@
     "gulpfile.js",
     "package.json",
     "test",
-    "tests"
+    "tests",
+    "typings",
+    "index.html",
+    "karma.conf.js",
+    "typings.json"
   ],
   "dependencies": {
     "angular": "^1.4.9",
