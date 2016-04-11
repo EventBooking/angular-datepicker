@@ -27,6 +27,7 @@ bower install https://github.com/EventBooking/angular-datepicker.git#latest
 
 ```
 'bower_components/tether/dist/js/tether.js',
+'bower_components/angular-typescript-module/dist/angular-typescript-module.js',
 'bower_components/angular-datepicker/dist/date-picker.js',
 'bower_components/angular-datepicker/dist/date-picker.templates.js',
 ```

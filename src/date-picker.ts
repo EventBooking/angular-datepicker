@@ -393,7 +393,7 @@ module DatePickerModule {
                     if (date.isSame(ctrl.date, 'day'))
                         return;
 
-                    ctrl.date = date;
+                    ctrl.date = date.format(ctrl.isoFormat);
                 } else {
                     var range = this.datePickerService.inputToRange(ngModelCtrl.$viewValue);
                     if (range == null) {
