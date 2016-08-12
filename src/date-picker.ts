@@ -564,7 +564,7 @@ module DatePickerModule {
                 singleDateBinding = `date="${this.controllerAs}.date" on-date-select="${this.controllerAs}.dateSelected(date)"`,
                 rangeBinding = `start="${this.controllerAs}.start" end="${this.controllerAs}.end" on-range-select="${this.controllerAs}.rangeSelected(start,end)"`,
                 bindings = ctrl.isSingleDate ? singleDateBinding : rangeBinding,
-                template = `<div class="datepicker-dropdown" ng-class="{'datepicker-open':${this.controllerAs}.isVisible}"><date-picker min-view="${$attrs.minView}" is-selecting="${this.controllerAs}.isSelecting" ${bindings}" highlighted="${this.controllerAs}.highlighted"></date-picker></div>`,
+                template = `<div class="datepicker-dropdown" ng-class="{'datepicker-open':${this.controllerAs}.isVisible}"><date-picker min-view="${$attrs.minView}" is-selecting="${this.controllerAs}.isSelecting" ${bindings}" highlighted="${this.controllerAs}.highlighted" default-date="{{${this.controllerAs}.defaultDate}}"></date-picker></div>`,
                 content: any = angular.element(template),
                 position = $element.position(),
                 height = $element.outerHeight(),

@@ -17,6 +17,9 @@
 	
 				<h1>Input</h1>
 				<input type="text" date-picker date="vm.date" ng-model="vm.dateModel" highlighted="vm.highlighted" />
+
+				<h1>Input (with default)</h1>
+				<input type="text" date-picker date="vm.date2" default-date="2016-02-10" ng-model="vm.dateModel" highlighted="vm.highlighted" />
 	
 				<h1>Inline</h1>
 				<date-picker date="vm.date" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date)"></date-picker>
