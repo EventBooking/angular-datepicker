@@ -32,7 +32,7 @@ module DatePickerModule {
             }
 
             this.isSingleDate = !($attrs.start != null || $attrs.end != null);
-            this.dateInternal = this.isSingleDate ? this.date : this.start;
+            this.dateInternal = this.isSingleDate ? (this.date||this.defaultDate) : this.start;
             this.calculate(this.dateInternal);
             this.initialized = true;
         }
@@ -88,6 +88,7 @@ module DatePickerModule {
         isoFormat = 'YYYY-MM-DD';
         isSingleDate: boolean;
         highlighted: string[];
+        defaultDate: string;
 
         private _dateInternal;
 
@@ -307,6 +308,7 @@ module DatePickerModule {
 
             // Other
             isSelecting: '=?',
+            defaultDate: '@?',
 
             // Collection of date strings (ie. ['2012-12-01','2012-12-02']
             highlighted: '=?'
