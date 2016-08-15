@@ -97,7 +97,7 @@ module DatePickerModule {
         }
 
         set dateInternal(value: any) {
-            var m = value != null ? moment(value) : moment();
+            var m = ((value||"").length>0) ? moment(value) : moment();
             this._dateInternal = m;
             if (this.initialized)
                 this.calculate(this._dateInternal);
