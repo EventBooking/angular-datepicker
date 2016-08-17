@@ -22,7 +22,7 @@ module.exports = function(config) {
 		// list of files / patterns to load in the browser
 		files: [
             'bower_components/tether/dist/css/tether.css',
-            'dist/date-picker.css',
+            'dist/angular-datepicker.css',
             'demo/stylesheet.css',
             
             'bower_components/jquery/dist/jquery.js',
@@ -32,8 +32,8 @@ module.exports = function(config) {
             'bower_components/angular-animate/angular-animate.js',
             'bower_components/angular-typescript-module/dist/angular-typescript-module.js',
 			'node_modules/angular-mocks/angular-mocks.js',
-            'dist/date-picker.debug.js',
-            'dist/date-picker.templates.js',
+            'dist/angular-datepicker.js',
+            'dist/angular-datepicker.templates.js',
             'demo/app.js',
 			'tests/**/*.js'
 		],

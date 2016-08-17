@@ -1,5 +1,5 @@
 /// <reference path="..\typings\main.d.ts" />
-/// <reference path="..\dist\date-picker.debug.d.ts" />
+/// <reference path="..\dist\angular-datepicker.d.ts" />
 
 describe('Time picker service', function() {
 

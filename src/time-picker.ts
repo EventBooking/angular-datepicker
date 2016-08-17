@@ -49,6 +49,8 @@ module DatePickerModule {
         initialized: boolean;
     }
 
+    Angular.module("ngDatePicker").controller('timePicker', TimePickerController);
+
     class TimePickerDirective {
         static $inject = [];
 

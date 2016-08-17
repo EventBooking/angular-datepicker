@@ -32,7 +32,12 @@ module DatePickerModule {
             }
 
             this.isSingleDate = !($attrs.start != null || $attrs.end != null);
-            this.dateInternal = this.isSingleDate ? (this.date||this.defaultDate) : this.start;
+        }
+
+        onInit() {
+            if (this.defaultDate == "")
+                this.defaultDate = null;
+            this.dateInternal = this.isSingleDate ? (this.date || this.defaultDate) : this.start;
             this.calculate(this.dateInternal);
             this.initialized = true;
         }
@@ -97,7 +102,7 @@ module DatePickerModule {
         }
 
         set dateInternal(value: any) {
-            var m = ((value||"").length>0) ? moment(value) : moment();
+            var m = value != null ? moment(value) : moment();
             this._dateInternal = m;
             if (this.initialized)
                 this.calculate(this._dateInternal);
@@ -286,6 +291,8 @@ module DatePickerModule {
         }
     }
 
+    Angular.module("ngDatePicker").controller('datePicker', DatePickerController);
+
     class DatePickerDirective {
         static $inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService'];
 
@@ -318,6 +325,7 @@ module DatePickerModule {
 
         link = ($scope, $element, $attrs, ngModelCtrl) => {
             var ctrl: DatePickerController = $scope[this.controllerAs];
+            ctrl.onInit();
 
             // Fixes a bug where Tether cannot correctly get width/height because of ngAnimate
             var $animate = this.$injector.get('$animate');
