@@ -294,9 +294,9 @@ module DatePickerModule {
     Angular.module("ngDatePicker").controller('datePicker', DatePickerController);
 
     class DatePickerDirective {
-        static $inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService'];
+        static $inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService', 'isMobile'];
 
-        constructor(private $injector, private $compile, private $templateCache, private $timeout, private $window, private datePickerService: IDatePickerService) { }
+        constructor(private $injector, private $compile, private $templateCache, private $timeout, private $window, private datePickerService: IDatePickerService, private isMobile: boolean) { }
 
         restrict = 'AE';
         require = '?ngModel';
@@ -332,8 +332,12 @@ module DatePickerModule {
             if ($animate != null)
                 $animate.enabled(false, $element);
 
-            if ($element.is('input[type="text"]'))
-                this.linkInput($scope, $element, $attrs, ngModelCtrl);
+            if ($element.is('input[type="text"]')) {
+                if (this.isMobile)
+                    this.linkNative($scope, $element, $attrs, ngModelCtrl);
+                else
+                    this.linkInput($scope, $element, $attrs, ngModelCtrl);
+            }
             else if ($element.is('date-picker'))
                 this.linkInline($scope, $element, $attrs, ngModelCtrl);
             else
@@ -347,7 +351,31 @@ module DatePickerModule {
             this.rangeSelect($scope, $element);
         };
 
-        linkInput($scope, $element, $attrs, ngModelCtrl) {
+        linkNative($scope, $element, $attrs, ngModelCtrl: angular.INgModelController) {
+            var ctrl: DatePickerController = $scope[this.controllerAs];
+            ctrl.isSingleDate = true;
+
+            var type = "date";
+            if ($attrs.minView == "months")
+                type = "month";
+            $element.prop("type", type);
+
+            ngModelCtrl.$viewChangeListeners.push(() => {
+                var date = moment(ngModelCtrl.$viewValue).format("YYYY-MM-DD");
+                ctrl.date = date;
+            });
+
+            $scope.$watch(() => ctrl.date, date => {
+                if (moment(ngModelCtrl.$viewValue).isSame(date))
+                    return;
+
+                var text = date == null ? '' : moment(date).format("L");
+                ngModelCtrl.$setViewValue(text);
+                ngModelCtrl.$render();
+            });
+        }
+
+        linkInput($scope, $element, $attrs, ngModelCtrl: angular.INgModelController) {
             var ctrl: DatePickerController = $scope[this.controllerAs];
 
             this.popover($scope, $element, $attrs);

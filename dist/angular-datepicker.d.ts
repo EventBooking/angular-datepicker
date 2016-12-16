@@ -1,6 +1,8 @@
 declare module DatePickerModule {
 }
 declare module DatePickerModule {
+}
+declare module DatePickerModule {
     interface IDatePickerRange {
         start: string;
         end: string;

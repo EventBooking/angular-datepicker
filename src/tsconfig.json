@@ -12,6 +12,7 @@
     "files": [
         "../typings/main.d.ts",
         "app.ts",
+        "mobile.ts",
         "date-picker.ts",
         "date-picker-service.ts",
         "time-picker.ts",
