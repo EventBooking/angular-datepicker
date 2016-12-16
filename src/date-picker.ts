@@ -360,6 +360,12 @@ module DatePickerModule {
                 type = "month";
             $element.prop("type", type);
 
+            if (ctrl.date) {
+                var text = moment(ctrl.date).format("L");
+                ngModelCtrl.$setViewValue(text);
+                ngModelCtrl.$render();
+            }
+
             ngModelCtrl.$viewChangeListeners.push(() => {
                 var date = moment(ngModelCtrl.$viewValue).format("YYYY-MM-DD");
                 ctrl.date = date;
