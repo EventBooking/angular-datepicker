@@ -360,7 +360,6 @@ module DatePickerModule {
             };
 
             var monthFormat = (date): string => {
-                $(`<div>3: date='${date}'</div>`).insertBefore($element);
                 var iso = date == null ? '' : moment(date).format("YYYY-MM");
                 return iso;
             };
