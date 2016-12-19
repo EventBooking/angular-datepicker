@@ -43,13 +43,13 @@ module DatePickerModule {
         }
 
         // Single Date
-        private _date: string;
+        private _date: string | Date;
 
-        get date(): string {
+        get date(): string | Date {
             return this._date;
         }
 
-        set date(value: string) {
+        set date(value: string | Date) {
             this._date = value;
             if (this.initialized)
                 this.dateInternal = this._date;
@@ -351,34 +351,44 @@ module DatePickerModule {
             this.rangeSelect($scope, $element);
         };
 
-        linkNative($scope, $element, $attrs, ngModelCtrl: angular.INgModelController) {
+        linkNative($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController) {
             var ctrl: DatePickerController = $scope[this.controllerAs];
-            ctrl.isSingleDate = true;
 
-            var type = "date";
-            if ($attrs.minView == "months")
+            var dateFormat = (date): string => {
+                var iso = date == null ? '' : moment(date).format("YYYY-MM-DD");
+                return iso;
+            };
+
+            var monthFormat = (date): string => {
+                $(`<div>3: date='${date}'</div>`).insertBefore($element);
+                var iso = date == null ? '' : moment(date).format("YYYY-MM");
+                return iso;
+            };
+
+            var type = "date",
+                formatter = dateFormat;
+            if ($attrs['minView'] == "months") {
                 type = "month";
+                formatter = monthFormat;
+            }
             $element.prop("type", type);
 
-            if (ctrl.date) {
-                var text = moment(ctrl.date).format("L");
-                ngModelCtrl.$setViewValue(text);
+            var setViewValue = (date) => {
+                var iso = formatter(date);
+                ngModelCtrl.$setViewValue(iso);
                 ngModelCtrl.$render();
-            }
-
-            ngModelCtrl.$viewChangeListeners.push(() => {
-                var date = moment(ngModelCtrl.$viewValue).format("YYYY-MM-DD");
-                ctrl.date = date;
-            });
+            };
 
             $scope.$watch(() => ctrl.date, date => {
-                if (moment(ngModelCtrl.$viewValue).isSame(date))
-                    return;
-
-                var text = date == null ? '' : moment(date).format("L");
-                ngModelCtrl.$setViewValue(text);
-                ngModelCtrl.$render();
+                setViewValue(date);
             });
+
+            ngModelCtrl.$viewChangeListeners.push(() => {
+                var m = moment(ngModelCtrl.$viewValue);
+                ctrl.date = m.isValid() ? dateFormat(ngModelCtrl.$viewValue) : null;
+            });
+
+            setViewValue(ctrl.date || ctrl.defaultDate);
         }
 
         linkInput($scope, $element, $attrs, ngModelCtrl: angular.INgModelController) {

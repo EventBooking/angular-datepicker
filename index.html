@@ -15,14 +15,19 @@
 				<h1>Element</h1>
 				<a href="#" date-picker date="vm.date" highlighted="vm.highlighted">{{vm.date}}</a>
 	
-				<h1>Input</h1>
+				<h1>Input date 1</h1>
+				<div>date='{{vm.date}}', element='{{vm.dateModel}}'</div>
 				<input type="text" date-picker date="vm.date" ng-model="vm.dateModel" highlighted="vm.highlighted" />
-
-				<h1>Input (with default)</h1>
-				<input type="text" date-picker date="vm.date2" default-date="2016-02-10" ng-model="vm.dateModel" highlighted="vm.highlighted" />
-	
-				<h1>Inline</h1>
 				<date-picker date="vm.date" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date)"></date-picker>
+
+				<h1>Input date 2 (with default)</h1>
+				<input type="text" date-picker date="vm.date2" default-date="2016-02-10" ng-model="vm.dateModel2" highlighted="vm.highlighted" />
+				<date-picker date="vm.date2" highlighted="vm.highlighted" on-date-select="vm.onDate2Select(date)"></date-picker>
+
+				<h1>Input date 3</h1>
+				<div>date='{{vm.date3}}', element='{{vm.dateModel3}}'</div>
+				<input type="text" date-picker date="vm.date3" ng-model="vm.dateModel3" min-view="months" />
+				<date-picker date="vm.date3" min-view="months"></date-picker>
 			</div>
 			
 			<div>
