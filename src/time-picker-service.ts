@@ -2,7 +2,8 @@ module DatePickerModule {
 
     export interface ITimePickerService {
         parse(text: string): any;
-        format(text: string): string;
+        format(text: string, value?: string): string;
+        formatIso(text: string, value?: string): string;
     }
 
     class TimePickerService implements ITimePickerService {
@@ -16,9 +17,14 @@ module DatePickerModule {
             return moment(text, patterns);
         }
 
-        format(text: string): string {
+        format(text: string, value: string = ''): string {
             var m = this.parse(text);
-            return m.isValid() ? m.format('LT') : '';
+            return m.isValid() ? m.format('LT') : value;
+        }
+
+        formatIso(text: string, value: string = ''): string {
+            var m = this.parse(text);
+            return m.isValid() ? m.format("HH:mm:ss") : value;
         }
     }
 

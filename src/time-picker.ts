@@ -2,62 +2,19 @@
 module DatePickerModule {
 
     class TimePickerController {
-        static $inject = ['timePickerService'];
-
-        constructor(private timePickerService: ITimePickerService) {
-            this.initialized = true;
-        }
-
-        onInit($scope, $element, ngModelCtrl) {
-            this.$scope = $scope;
-            this.ngModelCtrl = ngModelCtrl;
-
-            $element.on(`blur.${$scope.$id}`, () => {
-                var m = this.timePickerService.parse(ngModelCtrl.$modelValue);
-                this.time = m.isValid() ? m.format("HH:mm:ss") : null;
-            });
-
-            $scope.$on('$destroy', () => {
-                $element.off(`blur.${$scope.$id}`);
-            });
-
-            this.setValue(this._time);
-        }
-
-        private _time: string;
-
-        get time(): string {
-            return this._time;
-        }
-
-        set time(value: string) {
-            this._time = value;
-
-            if (this.initialized) {
-                this.setValue(value);
-            }
-        }
-
-        private setValue(value) {
-            var viewValue = this.timePickerService.format(value);
-            this.ngModelCtrl.$setViewValue(viewValue);
-            this.ngModelCtrl.$render();
-        }
-
-        ngModelCtrl;
-        $scope;
-        initialized: boolean;
+        time: string;
     }
 
     Angular.module("ngDatePicker").controller('timePicker', TimePickerController);
 
     class TimePickerDirective {
-        static $inject = [];
+        static $inject = ['timePickerService', 'isMobile'];
 
-        constructor() { }
+        constructor(private timePickerService: ITimePickerService, private isMobile: boolean) {
+        }
 
         restrict = 'A';
-        require = 'ngModel';
+        require = ['timePicker', 'ngModel'];
         controller = TimePickerController;
         controllerAs = 'timepicker';
         bindToController = true;
@@ -65,9 +22,60 @@ module DatePickerModule {
             time: '='
         };
 
-        link = ($scope, $element, $attrs, ngModelCtrl) => {
-            var ctrl: TimePickerController = $scope[this.controllerAs];
-            ctrl.onInit($scope, $element, ngModelCtrl);
+        link = ($scope, $element, $attrs, ctrls: any[]) => {
+            var $ctrl: TimePickerController = ctrls[0],
+                $ngModelCtrl: angular.INgModelController = ctrls[1];
+
+            if (this.isMobile) {
+                this.linkMobile($scope, $element, $attrs, $ctrl, $ngModelCtrl);
+                return;
+            }
+
+            this.linkDesktop($scope, $element, $attrs, $ctrl, $ngModelCtrl);
+        };
+
+        linkMobile = ($scope, $element, $attrs, $ctrl: TimePickerController, $ngModelCtrl: angular.INgModelController) => {
+            $element.prop('type', 'time');
+
+            var setViewValue = (time) => {
+                var viewValue = this.timePickerService.formatIso(time);
+                $ngModelCtrl.$setViewValue(viewValue);
+                $ngModelCtrl.$render();
+            }
+
+            $scope.$watch(() => $ctrl.time, time => {
+                setViewValue(time);
+            });
+
+            $ngModelCtrl.$viewChangeListeners.push(() => {
+                var iso = this.timePickerService.formatIso($ngModelCtrl.$viewValue, null);
+                $ctrl.time = iso;
+            });
+
+            setViewValue($ctrl.time);
+        };
+
+        linkDesktop = ($scope, $element, $attrs, $ctrl: TimePickerController, $ngModelCtrl: angular.INgModelController) => {
+            $element.on(`blur.${$scope.$id}`, () => {
+                var m = this.timePickerService.parse($ngModelCtrl.$modelValue);
+                $ctrl.time = m.isValid() ? m.format("HH:mm:ss") : null;
+            });
+
+            $scope.$on('$destroy', () => {
+                $element.off(`blur.${$scope.$id}`);
+            });
+
+            var setViewValue = (value) => {
+                var viewValue = this.timePickerService.format(value);
+                $ngModelCtrl.$setViewValue(viewValue);
+                $ngModelCtrl.$render();
+            }
+
+            $scope.$watch(() => $ctrl.time, time => {
+                setViewValue(time);
+            });
+
+            setViewValue($ctrl.time);
         };
 
     }
