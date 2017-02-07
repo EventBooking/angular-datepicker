@@ -59,6 +59,10 @@ module DatePickerModule {
             $element.on(`blur.${$scope.$id}`, () => {
                 var m = this.timePickerService.parse($ngModelCtrl.$modelValue);
                 $ctrl.time = m.isValid() ? m.format("HH:mm:ss") : null;
+
+                setViewValue($ngModelCtrl.$modelValue);
+
+                $ngModelCtrl.$setValidity('invalidTime', m.isValid());
                 $scope.$apply();
             });
 

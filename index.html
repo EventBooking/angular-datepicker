@@ -69,8 +69,13 @@
 				<h1>Time</h1>
 	
 				<h1>Input</h1>
-				<input type="text" time-picker time="vm.time" ng-model="vm.timeModel" />
-                <div>time = '{{vm.time}}'</div>
+				<form name="timeForm1">
+					<input name="time1" type="text" time-picker time="vm.time" ng-model="vm.timeModel" />
+					<div>time = '{{vm.time}}'</div>
+					<div ng-if="timeForm1.$invalid">
+						<div ng-if="timeForm1.time1.$error.invalidTime">invalidTime</div>
+					</div>
+				</form>
 			</div>
 		</div>
 	
