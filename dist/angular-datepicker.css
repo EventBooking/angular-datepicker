@@ -358,8 +358,8 @@
 .datepicker-dropdown.datepicker-open {
   display: block;
 }
-.datepicker-target-attached-bottom:before,
-.datepicker-target-attached-bottom:after {
+.datepicker-target-attached-bottom.datepicker-dropdown:before,
+.datepicker-target-attached-bottom.datepicker-dropdown:after {
   content: "";
   display: block;
   overflow: hidden;
@@ -371,13 +371,13 @@
   bottom: auto;
   right: auto;
 }
-.datepicker-target-attached-bottom:before {
+.datepicker-target-attached-bottom.datepicker-dropdown:before {
   top: -14px;
   border-left: 14px solid transparent;
   border-right: 14px solid transparent;
   border-bottom: 14px solid #E2E1DF;
 }
-.datepicker-target-attached-bottom:after {
+.datepicker-target-attached-bottom.datepicker-dropdown:after {
   top: -13px;
   border-left: 14px solid transparent;
   border-right: 14px solid transparent;
