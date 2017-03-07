@@ -66,7 +66,7 @@ module DatePickerModule {
 
                 var isRequired = $attrs['required'];
                 var isValid = !isRequired || (isRequired && m.isValid());
-                console.log('isRequired: ', isRequired, " isValid: ", isValid);
+                
                 $ngModelCtrl.$setValidity('invalidTime', isValid);
                 $scope.$apply();
             });
