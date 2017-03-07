@@ -8,9 +8,9 @@ module DatePickerModule {
     Angular.module("ngDatePicker").controller('timePicker', TimePickerController);
 
     class TimePickerDirective {
-        static $inject = ['timePickerService', 'isMobile'];
+        static $inject = ['timePickerService', 'isMobile', '$parse'];
 
-        constructor(private timePickerService: ITimePickerService, private isMobile: boolean) {
+        constructor(private timePickerService: ITimePickerService, private isMobile: boolean, private $parse: angular.IParseService) {
         }
 
         restrict = 'A';
@@ -56,13 +56,18 @@ module DatePickerModule {
         };
 
         linkDesktop = ($scope, $element, $attrs, $ctrl: TimePickerController, $ngModelCtrl: angular.INgModelController) => {
+            
+
             $element.on(`blur.${$scope.$id}`, () => {
                 var m = this.timePickerService.parse($ngModelCtrl.$modelValue);
                 $ctrl.time = m.isValid() ? m.format("HH:mm:ss") : null;
 
                 setViewValue($ngModelCtrl.$modelValue);
 
-                $ngModelCtrl.$setValidity('invalidTime', m.isValid());
+                var isRequired = $attrs['required'];
+                var isValid = !isRequired || (isRequired && m.isValid());
+                console.log('isRequired: ', isRequired, " isValid: ", isValid);
+                $ngModelCtrl.$setValidity('invalidTime', isValid);
                 $scope.$apply();
             });
 

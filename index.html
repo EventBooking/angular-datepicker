@@ -70,11 +70,30 @@
 	
 				<h1>Input</h1>
 				<form name="timeForm1">
-					<input name="time1" type="text" time-picker time="vm.time" ng-model="vm.timeModel" />
+					<input name="time1" type="text" time-picker time="vm.time1" ng-model="vm.timeModel1" />
 					<div>time = '{{vm.time}}'</div>
 					<div ng-if="timeForm1.$invalid">
 						<div ng-if="timeForm1.time1.$error.invalidTime">invalidTime</div>
 					</div>
+				</form>
+
+				<h1>Input (required)</h1>
+				<form name="timeForm2">
+					<input name="time1" type="text" time-picker time="vm.time2" ng-model="vm.timeModel2" required/>
+					<div>time = '{{vm.time}}'</div>
+					<div ng-if="timeForm2.$invalid">
+						<div ng-if="timeForm2.time1.$error.invalidTime">invalidTime</div>
+					</div>
+				</form>
+
+				<h1>Input (required={{vm.time3Required}})</h1>
+				<form name="timeForm3">
+					<input name="time1" type="text" time-picker time="vm.time3" ng-model="vm.timeModel3" ng-required="vm.time3Required" />
+					<div>time = '{{vm.time}}'</div>
+					<div ng-if="timeForm3.$invalid">
+						<div ng-if="timeForm3.time1.$error.invalidTime">invalidTime</div>
+					</div>
+					<a href="#" ng-click="vm.time3Required = !vm.time3Required">toggle required</a>
 				</form>
 			</div>
 		</div>

@@ -16,7 +16,9 @@ function TestController() {
 	this.start = '2015-12-01';
 	this.end = '2015-12-04';
 	this.highlighted = ['2015-12-10', '2015-12-12', '2015-12-13'];
-    this.time = '14:05:00';
+    this.time1 = '14:05:00';
+	this.time2 = '14:05:00';
+	this.time3 = '14:05:00';
 }
 
 angular.module("demo", ["ngAnimate", "ngDatePicker"])
