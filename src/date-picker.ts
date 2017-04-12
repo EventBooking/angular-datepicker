@@ -488,6 +488,9 @@ module DatePickerModule {
         }
 
         linkElement($scope, $element, $attrs, ngModelCtrl) {
+            var currentElement = $element.get(0);
+            var currentTabIndex = currentElement.getAttribute("tabIndex");
+            currentElement.setAttribute("tabIndex", currentTabIndex != null ? currentTabIndex : "-1");
             this.popover($scope, $element, $attrs);
         }
 
