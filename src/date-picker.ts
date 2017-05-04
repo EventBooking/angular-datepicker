@@ -37,7 +37,7 @@ module DatePickerModule {
         onInit() {
             if (this.defaultDate == "")
                 this.defaultDate = null;
-            this.dateInternal = this.isSingleDate ? (this.date || this.defaultDate) : this.start;
+            this.dateInternal = (this.isSingleDate ? this.date : this.start) || this.defaultDate;
             this.calculate(this.dateInternal);
             this.initialized = true;
         }
