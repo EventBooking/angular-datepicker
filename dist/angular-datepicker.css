@@ -31,7 +31,6 @@
   height: 1px;
   width: 100%;
   background-repeat: no-repeat;
-  background-image: -webkit-radial-gradient(circle, #777, #fff);
   background-image: radial-gradient(circle, #777, #fff);
   margin: 5px 0;
 }

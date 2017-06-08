@@ -1,13 +1,13 @@
 {
   "name": "angular-datepicker",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "pretest": "npm run tsc:tests",
     "test": "karma start",
     "start": "npm run build && lite-server",
-    "postinstall": "bower install && typings install",
+    "postinstall": "typings install",
     "build": "gulp styles && gulp html && npm run tsc",
     "rebuild": "gulp clean && npm run build",
     "tsc": "tsc -p src",
@@ -30,7 +30,6 @@
   "homepage": "https://github.com/EventBooking/angular-datepicker#readme",
   "devDependencies": {
     "angular-mocks": "^1.4.9",
-    "bower": "^1.7.0",
     "chai": "^3.4.1",
     "concurrently": "^2.2.0",
     "del": "^2.2.0",
@@ -58,5 +57,12 @@
     "sinon": "^1.17.2",
     "typescript": "^1.8.7",
     "typings": "^0.7.4"
+  },
+  "dependencies": {
+    "angular": "^1.4.9",
+    "moment": "^2.10.6",
+    "tether": "^1.1.1",
+    "jquery": "^2.1.4",
+    "angular-typescript-module": "github:eventbooking/angular-typescript-module#v2.0.0"
   }
 }

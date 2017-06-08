@@ -21,16 +21,16 @@ module.exports = function(config) {
 
 		// list of files / patterns to load in the browser
 		files: [
-            'bower_components/tether/dist/css/tether.css',
+            'node_modules/tether/dist/css/tether.css',
             'dist/angular-datepicker.css',
             'demo/stylesheet.css',
             
-            'bower_components/jquery/dist/jquery.js',
-            'bower_components/moment/moment.js',
-            'bower_components/tether/dist/js/tether.js',
-            'bower_components/angular/angular.js',
-            'bower_components/angular-animate/angular-animate.js',
-            'bower_components/angular-typescript-module/dist/angular-typescript-module.js',
+            'node_modules/jquery/dist/jquery.js',
+            'node_modules/moment/moment.js',
+            'node_modules/tether/dist/js/tether.js',
+            'node_modules/angular/angular.js',
+            'node_modules/angular-animate/angular-animate.js',
+            'node_modules/angular-typescript-module/dist/angular-typescript-module.js',
 			'node_modules/angular-mocks/angular-mocks.js',
             'dist/angular-datepicker.js',
             'dist/angular-datepicker.templates.js',
