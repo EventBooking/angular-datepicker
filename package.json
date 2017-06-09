@@ -8,7 +8,7 @@
     "pretest": "npm run tsc:tests",
     "test": "karma start",
     "start": "npm run build && lite-server",
-    "postinstall": "typings install",
+    "postinstall": "npm run typings install",
     "build": "gulp styles && gulp html && npm run tsc",
     "rebuild": "gulp clean && npm run build",
     "tsc": "tsc -p src",
