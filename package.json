@@ -1,8 +1,9 @@
 {
   "name": "angular-datepicker",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/angular-datepicker.js",
+  "typings": "./dist/angular-datepicker.dt.js",
   "scripts": {
     "pretest": "npm run tsc:tests",
     "test": "karma start",
@@ -64,6 +65,6 @@
     "moment": "^2.10.6",
     "tether": "^1.1.1",
     "jquery": "^2.1.4",
-    "angular-typescript-module": "github:eventbooking/angular-typescript-module#v2.0.0"
+    "angular-typescript-module": "github:eventbooking/angular-typescript-module#v2.0.1"
   }
 }
