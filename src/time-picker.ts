@@ -56,9 +56,8 @@ module DatePickerModule {
         };
 
         linkDesktop = ($scope, $element, $attrs, $ctrl: TimePickerController, $ngModelCtrl: angular.INgModelController) => {
-            
 
-            $element.on(`blur.${$scope.$id}`, () => {
+            const update = () => {
                 var m = this.timePickerService.parse($ngModelCtrl.$modelValue);
                 $ctrl.time = m.isValid() ? m.format("HH:mm:ss") : null;
 
@@ -69,6 +68,14 @@ module DatePickerModule {
                 
                 $ngModelCtrl.$setValidity('invalidTime', isValid);
                 $scope.$apply();
+            }
+
+            $element.on(`blur.${$scope.$id}`, update);
+            $element.on(`keydown.${$scope.$id} keydown.${$scope.$id}`, e => {
+                if(e.which !== 13)
+                    return;
+
+                update();
             });
 
             $scope.$on('$destroy', () => {

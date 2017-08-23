@@ -19,6 +19,10 @@ function TestController() {
     this.time1 = '14:05:00';
 	this.time2 = '14:05:00';
 	this.time3 = '14:05:00';
+
+	this.showTime4 = function() {
+		this.time4Submit = this.time4;
+	}
 }
 
 angular.module("demo", ["ngAnimate", "ngDatePicker"])

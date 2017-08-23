@@ -69,7 +69,7 @@
 				<h1>Time</h1>
 	
 				<h1>Input</h1>
-				<form name="timeForm1">
+				 <form name="timeForm1">
 					<input name="time1" type="text" time-picker time="vm.time1" ng-model="vm.timeModel1" />
 					<div>time = '{{vm.time}}'</div>
 					<div ng-if="timeForm1.$invalid">
@@ -94,6 +94,13 @@
 						<div ng-if="timeForm3.time1.$error.invalidTime">invalidTime</div>
 					</div>
 					<a href="#" ng-click="vm.time3Required = !vm.time3Required">toggle required</a>
+				</form> 
+
+				<h1>Submit test</h1>
+				<form name="timeForm4" ng-submit="vm.showTime4()" novalidate>
+					<input name="time4" type="text" time-picker time="vm.time4" ng-model="vm.timeModel4" />
+					<div>time = '{{vm.time4}}'</div>
+					<input type="submit" name="" id="" value="Submit" /> <div ng-show="timeForm4.$submitted">submitted = '{{vm.time4Submit}}'</div>
 				</form>
 			</div>
 		</div>
