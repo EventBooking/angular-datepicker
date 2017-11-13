@@ -1,6 +1,7 @@
 <html ng-app="demo">
 
 	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable = no">
 		<link rel="stylesheet" href="node_modules/tether/dist/css/tether.css" />
 		<link rel="stylesheet" href="dist/angular-datepicker.css" />
 		<link rel="stylesheet" href="demo/stylesheet.css" />
@@ -8,41 +9,44 @@
 	
 	<body>
 	
-		<div style="display: flex;">
+		<div style="display: flex; flex-wrap: wrap;">
 			<div>
-				<h1>Date</h1> {{vm.date}}
+				<h4>Date</h4> {{vm.date}}
 	
-				<h1>Element</h1>
+				<h4>Element - date</h4>
 				<a href="#" date-picker date="vm.date" highlighted="vm.highlighted">{{vm.date}}</a>
+
+				<h4>Element - start/end</h4>
+				<div date-picker start="vm.start" end="vm.end" highlighted="vm.highlighted">{{vm.start}}</div>
 	
-				<h1>Input date 1</h1>
+				<h4>Input date 1</h4>
 				<div>date='{{vm.date}}', element='{{vm.dateModel}}'</div>
 				<input type="text" date-picker date="vm.date" ng-model="vm.dateModel" highlighted="vm.highlighted" />
 				<date-picker date="vm.date" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date)"></date-picker>
 
-				<h1>Input date 2 (with default)</h1>
+				<h4>Input date 2 (with default)</h4>
 				<input type="text" date-picker date="vm.date2" default-date="2016-02-10" ng-model="vm.dateModel2" highlighted="vm.highlighted" />
 				<date-picker date="vm.date2" highlighted="vm.highlighted" on-date-select="vm.onDate2Select(date)"></date-picker>
 
-				<h1>Input date 3</h1>
+				<h4>Input date 3</h4>
 				<div>date='{{vm.date3}}', element='{{vm.dateModel3}}'</div>
 				<input type="text" date-picker date="vm.date3" ng-model="vm.dateModel3" min-view="months" />
 				<date-picker date="vm.date3" min-view="months"></date-picker>
 			</div>
 			
 			<div>
-				<h1>Range</h1> {{vm.start}} - {{vm.end}}
+				<h4>Range</h4> {{vm.start}} - {{vm.end}}
 	
-				<h1>Element</h1>
+				<h4>Element</h4>
 				<a href="#" date-picker start="vm.start" end="vm.end" highlighted="vm.highlighted">{{vm.start}}</a>
 	
-				<h1>Input</h1>
+				<h4>Input</h4>
 				<input type="text" date-picker start="vm.start" end="vm.end" ng-model="vm.rangeModel" highlighted="vm.highlighted" />
                 
-                <h1>Empty Input</h1>
+                <h4>Empty Input</h4>
 				<input type="text" date-picker start="vm.start1" end="vm.end1" ng-model="vm.rangeModel1" />
 	
-				<h1>Inline</h1>
+				<h4>Inline</h4>
 				<date-picker start="vm.start" end="vm.end" highlighted="vm.highlighted" on-range-select="vm.onRangeSelect(start,end)"></date-picker>
 			</div>
 			
@@ -51,9 +55,9 @@
 			<div class="sidebar" ng-if="vm.show">
 				<a href="#" ng-click="vm.show=false">hide</a>
 				
-				<h1>Visibility</h1>
+				<h4>Visibility</h4>
 	
-				<h1>Input</h1> 
+				<h4>Input</h4> 
 				
 				<div>
 					<input type="text" date-picker start="vm.start" end="vm.end" ng-model="vm.rangeModel" highlighted="vm.highlighted" />
@@ -66,9 +70,9 @@
 			</div>
             
             <div>
-				<h1>Time</h1>
+				<h4>Time</h4>
 	
-				<h1>Input</h1>
+				<h4>Input</h4>
 				 <form name="timeForm1">
 					<input name="time1" type="text" time-picker time="vm.time1" ng-model="vm.timeModel1" />
 					<div>time = '{{vm.time}}'</div>
@@ -77,7 +81,7 @@
 					</div>
 				</form>
 
-				<h1>Input (required)</h1>
+				<h4>Input (required)</h4>
 				<form name="timeForm2">
 					<input name="time1" type="text" time-picker time="vm.time2" ng-model="vm.timeModel2" required/>
 					<div>time = '{{vm.time}}'</div>
@@ -86,7 +90,7 @@
 					</div>
 				</form>
 
-				<h1>Input (required={{vm.time3Required}})</h1>
+				<h4>Input (required={{vm.time3Required}})</h4>
 				<form name="timeForm3">
 					<input name="time1" type="text" time-picker time="vm.time3" ng-model="vm.timeModel3" ng-required="vm.time3Required" />
 					<div>time = '{{vm.time}}'</div>
@@ -96,7 +100,7 @@
 					<a href="#" ng-click="vm.time3Required = !vm.time3Required">toggle required</a>
 				</form> 
 
-				<h1>Submit test</h1>
+				<h4>Submit test</h4>
 				<form name="timeForm4" ng-submit="vm.showTime4()" novalidate>
 					<input name="time4" type="text" time-picker time="vm.time4" ng-model="vm.timeModel4" />
 					<div>time = '{{vm.time4}}'</div>

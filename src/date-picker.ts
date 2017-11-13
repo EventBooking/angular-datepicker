@@ -30,8 +30,6 @@ module DatePickerModule {
                     this.minView = DatePickerView.Days;
                     break;
             }
-
-            this.isSingleDate = !($attrs.start != null || $attrs.end != null);
         }
 
         onInit() {
@@ -51,31 +49,41 @@ module DatePickerModule {
 
         set date(value: string | Date) {
             this._date = value;
-            if (this.initialized)
-                this.dateInternal = this._date;
+            this._start = value;
+            this._end = value;
+
+            if (!this.initialized)
+                return;
+
+            this.dateInternal = this._date;
         }
 
         // Range
-        private _start: string;
+        private _start: string | Date;
 
-        get start(): string {
+        get start(): string | Date {
             return this._start;
         }
 
-        set start(value: string) {
+        set start(value: string | Date) {
             this._start = value;
-            if (this.initialized)
-                this.dateInternal = this._start;
+            this._date = value;
+
+            if (!this.initialized)
+                return;
+            
+            this.dateInternal = this._start;
         }
 
-        private _end: string;
+        private _end: string | Date;
 
-        get end(): string {
+        get end(): string | Date {
             return this._end;
         }
 
-        set end(value: string) {
+        set end(value: string | Date) {
             this._end = value;
+            this._date = value;
         }
 
         onDateSelect;
@@ -325,6 +333,8 @@ module DatePickerModule {
 
         link = ($scope, $element, $attrs, ngModelCtrl) => {
             var $ctrl: DatePickerController = $scope[this.controllerAs];
+
+            $ctrl.isSingleDate = ($attrs.start == null && $attrs.end == null);
             $ctrl.onInit();
 
             // Fixes a bug where Tether cannot correctly get width/height because of ngAnimate
@@ -357,22 +367,22 @@ module DatePickerModule {
         linkNativeInput($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController) {
             var ctrl: DatePickerController = $scope[this.controllerAs];
 
-            var dateFormat = (date): string => {
-                var iso = date == null ? '' : moment(date).format("YYYY-MM-DD");
+            function format(date, pattern): string {
+                var iso = date == null ? '' : moment(date).format(pattern);
                 return iso;
-            };
+            }
 
-            var monthFormat = (date): string => {
-                var iso = date == null ? '' : moment(date).format("YYYY-MM");
-                return iso;
-            };
+            var dateFormat = (date) => format(date, "YYYY-MM-DD");
+            var monthFormat = (date) => format(date, "YYYY-MM");
 
             var type = "date",
                 formatter = dateFormat;
+
             if ($attrs['minView'] == "months") {
                 type = "month";
                 formatter = monthFormat;
             }
+
             $element.prop("type", type);
 
             var setViewValue = (date) => {

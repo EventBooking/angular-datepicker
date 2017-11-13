@@ -2,7 +2,25 @@
 module DatePickerModule {
 
     class TimePickerController {
-        time: string;
+        private $postLink() {
+            this.initialized = true;
+        }
+
+        private _time: string;
+
+        get time(): string {
+            return this._time;
+        }
+
+        set time(value: string) {
+            this._time = value;
+            
+            if (this.initialized)
+                this.onChange(value);
+        }
+
+        onChange: (time: string) => void;
+        private initialized: boolean;
     }
 
     Angular.module("ngDatePicker").controller('timePicker', TimePickerController);
@@ -19,7 +37,8 @@ module DatePickerModule {
         controllerAs = 'timepicker';
         bindToController = true;
         scope = {
-            time: '='
+            time: '=',
+            onChange: '&'
         };
 
         link = ($scope, $element, $attrs, ctrls: any[]) => {
@@ -65,14 +84,14 @@ module DatePickerModule {
 
                 var isRequired = $attrs['required'];
                 var isValid = !isRequired || (isRequired && m.isValid());
-                
+
                 $ngModelCtrl.$setValidity('invalidTime', isValid);
                 $scope.$apply();
             }
 
             $element.on(`blur.${$scope.$id}`, update);
             $element.on(`keydown.${$scope.$id} keydown.${$scope.$id}`, e => {
-                if(e.which !== 13)
+                if (e.which !== 13)
                     return;
 
                 update();
