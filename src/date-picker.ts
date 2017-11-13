@@ -502,7 +502,7 @@ module DatePickerModule {
             });
         }
 
-        linkNativeElement($scope, $element: angular.IAugmentedJQuery, $attrs, ngModelCtrl, $ctrl: DatePickerController) {
+        linkNativeElement($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs, ngModelCtrl, $ctrl: DatePickerController) {
             this.setTabIndex($element);
 
             const getVm = (name) => `${this.controllerAs}.${name}`;
@@ -530,9 +530,14 @@ module DatePickerModule {
                     return _builder;
                 }
 
+                this.addProxy = (name: string, fn: Function) => {
+                    $ctrl[name] = fn;
+                    return _builder;
+                }
+
                 this.addEvent = (name, attr, ctrl) => {
                     if (typeof attr != "undefined")
-                        this.attrs.push(getAttr(name, attr));
+                        this.attrs.push(getVmAttr(name, ctrl));
                     return _builder;
                 }
 
@@ -547,10 +552,12 @@ module DatePickerModule {
                 .addLiteral("min-view", $attrs.minView)
                 .addBinding("ng-model", true, "dateString")
                 .addBinding("date", $attrs.date, "date")
-                .addEvent("on-date-select", $attrs.onDateSelect, "onDateSelect(date)")
+                .addProxy("dateSelected", (date) => $ctrl.onDateSelect({ date: date }))
+                .addEvent("on-date-select", $attrs.onDateSelect, "dateSelected(date)")
                 .addBinding("start", $attrs.start, "start")
                 .addBinding("end", $attrs.end, "end")
-                .addEvent("on-range-select", $attrs.onRangeSelect, "onRangeSelect(start,end)")
+                .addProxy("rangeSelected", (start, end) => $ctrl.onRangeSelect({ start: start, end: end }))
+                .addEvent("on-range-select", $attrs.onRangeSelect, "rangeSelected(start,end)")
                 .addBinding("is-selecting", $attrs.isSelecting, "isSelecting")
                 .addLiteral("default-date", $attrs.defaultDate)
                 .addBinding("highlighted", $attrs.highlighted, "highlighted");
