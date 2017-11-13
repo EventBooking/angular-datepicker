@@ -14,9 +14,9 @@ module DatePickerModule {
 
         set time(value: string) {
             this._time = value;
-            
-            if (this.initialized)
-                this.onChange(value);
+
+            // if (this.initialized)
+            //     this.onChange(value);
         }
 
         onChange: (time: string) => void;
