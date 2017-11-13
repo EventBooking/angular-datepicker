@@ -305,12 +305,12 @@ module DatePickerModule {
         bindToController = true;
         scope = {
             // Single Date
-            date: '=',
+            date: '=?',
             onDateSelect: '&',
 
             // Range
-            start: '=',
-            end: '=',
+            start: '=?',
+            end: '=?',
             onRangeSelect: '&',
 
             // Other
@@ -324,26 +324,29 @@ module DatePickerModule {
         calendarTemplate = 'date-picker.html';
 
         link = ($scope, $element, $attrs, ngModelCtrl) => {
-            var ctrl: DatePickerController = $scope[this.controllerAs];
-            ctrl.onInit();
+            var $ctrl: DatePickerController = $scope[this.controllerAs];
+            $ctrl.onInit();
 
             // Fixes a bug where Tether cannot correctly get width/height because of ngAnimate
             var $animate = this.$injector.get('$animate');
             if ($animate != null)
                 $animate.enabled(false, $element);
 
-            if ($element.is('input[type="text"]')) {
-                if (this.isMobile)
-                    this.linkNative($scope, $element, $attrs, ngModelCtrl);
-                else
-                    this.linkInput($scope, $element, $attrs, ngModelCtrl);
-            }
-            else if ($element.is('date-picker'))
-                this.linkInline($scope, $element, $attrs, ngModelCtrl);
-            else
-                this.linkElement($scope, $element, $attrs, ngModelCtrl);
+            const linkRun = (fn: Function) => {
+                fn.call(this, $scope, $element, $attrs, ngModelCtrl, $ctrl);
+            };
 
-            if (ctrl.isSingleDate) {
+            if ($element.is('input[type="text"]')) {
+                linkRun(this.isMobile ? this.linkNativeInput : this.linkInput);
+            }
+            else if ($element.is('date-picker')) {
+                linkRun(this.linkInline);
+            }
+            else {
+                linkRun(this.isMobile ? this.linkNativeElement : this.linkElement);
+            }
+
+            if ($ctrl.isSingleDate) {
                 this.daySelect($scope, $element);
                 return;
             }
@@ -351,7 +354,7 @@ module DatePickerModule {
             this.rangeSelect($scope, $element);
         };
 
-        linkNative($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController) {
+        linkNativeInput($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController) {
             var ctrl: DatePickerController = $scope[this.controllerAs];
 
             var dateFormat = (date): string => {
@@ -487,16 +490,86 @@ module DatePickerModule {
             });
         }
 
+        linkNativeElement($scope, $element: angular.IAugmentedJQuery, $attrs, ngModelCtrl, $ctrl: DatePickerController) {
+            this.setTabIndex($element);
+
+            const getVm = (name) => `${this.controllerAs}.${name}`;
+            const getAttr = (name, value) => `${name}="${value}"`
+            const getVmAttr = (name, value) => getAttr(name, getVm(value));
+
+            function TypeBuilder() {
+                this.attrs = [];
+                const _builder = this;
+
+                this.addAttr = (name, value) => {
+                    this.attrs.push(getAttr(name, value));
+                    return _builder;
+                }
+
+                this.addLiteral = (name, attr) => {
+                    if (typeof attr != "undefined")
+                        this.attrs.push(getAttr(name, attr));
+                    return _builder;
+                }
+
+                this.addBinding = (name, attr, ctrl) => {
+                    if (typeof attr != "undefined")
+                        this.attrs.push(getVmAttr(name, ctrl));
+                    return _builder;
+                }
+
+                this.addEvent = (name, attr, ctrl) => {
+                    if (typeof attr != "undefined")
+                        this.attrs.push(getVmAttr(name, ctrl));
+                    return _builder;
+                }
+
+                this.build = () => {
+                    const content = `<input date-picker ${this.attrs.join(' ')} required>`;
+                    return content;
+                }
+            }
+
+            const builder = new TypeBuilder()
+                .addAttr("type", "text")
+                .addLiteral("min-view", $attrs.minView)
+                .addBinding("ng-model", true, "dateString")
+                .addBinding("date", $attrs.date, "date")
+                .addEvent("on-date-select", $attrs.onDateSelect, "onDateSelect(date)")
+                .addBinding("start", $attrs.start, "start")
+                .addBinding("end", $attrs.end, "end")
+                .addEvent("on-rangeSelect", $attrs.onRangeSelect, "onRangeSelect(start,end)")
+                .addBinding("is-selecting", $attrs.isSelecting, "isSelecting")
+                .addLiteral("default-date", $attrs.defaultDate)
+                .addBinding("highlighted", $attrs.highlighted, "highlighted");
+
+            const content = builder.build();
+
+            const $input = angular.element(content)
+                .addClass('datepicker-linkNativeElement-input');
+            this.$compile($input)($scope);
+
+            $element.addClass('datepicker-linkNativeElement')
+                .removeAttr("href")
+                .append($input);
+
+            console.log(content);
+        }
+
         linkElement($scope, $element, $attrs, ngModelCtrl) {
-            var currentElement = $element.get(0);
-            var currentTabIndex = currentElement.getAttribute("tabIndex");
-            currentElement.setAttribute("tabIndex", currentTabIndex != null ? currentTabIndex : "-1");
+            this.setTabIndex($element);
             this.popover($scope, $element, $attrs);
         }
 
         linkInline($scope, $element, $attrs, ngModelCtrl) {
             var content = this.createContent($scope);
             $element.append(content);
+        }
+
+        setTabIndex($element) {
+            var currentElement = $element.get(0);
+            var currentTabIndex = currentElement.getAttribute("tabIndex");
+            currentElement.setAttribute("tabIndex", currentTabIndex != null ? currentTabIndex : "-1");
         }
 
         getDays(range, ctrl) {
@@ -575,20 +648,6 @@ module DatePickerModule {
                     $scope.$apply();
                 }, 300);
             });
-
-
-            //             $body.on(`DOMMouseScroll.${$scope.$id} mousewheel.${$scope.$id}`, () => {
-            //                 if (!ctrl.isVisible)
-            //                     return;
-            // 
-            //                 ctrl.isVisible = false;
-            //                 $scope.$apply();
-            //             });
-
-            // angular.element(this.$window).on(`resize.${$scope.$id}`, () => {
-            //     ctrl.isVisible = false;
-            //     $scope.$apply();
-            // });
 
             $body.on(`click.${$scope.$id}`, e => {
                 if (!ctrl.isVisible)

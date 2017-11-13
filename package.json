@@ -17,7 +17,9 @@
     "tsc:tests:w": "tsc -p tests -w",
     "karma": "karma",
     "gulp": "gulp",
-    "typings": "typings"
+    "watch": "gulp watch",
+    "typings": "typings",
+    "server": "lite-server"
   },
   "repository": {
     "type": "git",
