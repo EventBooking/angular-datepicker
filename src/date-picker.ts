@@ -71,7 +71,7 @@ module DatePickerModule {
 
             if (!this.initialized)
                 return;
-            
+
             this.dateInternal = this._start;
         }
 
@@ -307,7 +307,7 @@ module DatePickerModule {
         constructor(private $injector, private $compile, private $templateCache, private $timeout, private $window, private datePickerService: IDatePickerService, private isMobile: boolean) { }
 
         restrict = 'AE';
-        require = '?ngModel';
+        require = ['?ngModel', 'datePicker'];
         controller = DatePickerController;
         controllerAs = 'datepicker';
         bindToController = true;
@@ -331,9 +331,7 @@ module DatePickerModule {
 
         calendarTemplate = 'date-picker.html';
 
-        link = ($scope, $element, $attrs, ngModelCtrl) => {
-            var $ctrl: DatePickerController = $scope[this.controllerAs];
-
+        link = ($scope, $element, $attrs, [ngModelCtrl, $ctrl]: [angular.INgModelController, DatePickerController]) => {
             $ctrl.isSingleDate = ($attrs.start == null && $attrs.end == null);
             $ctrl.onInit();
 
@@ -364,9 +362,7 @@ module DatePickerModule {
             this.rangeSelect($scope, $element);
         };
 
-        linkNativeInput($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController) {
-            var ctrl: DatePickerController = $scope[this.controllerAs];
-
+        linkNativeInput($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController, $ctrl: DatePickerController) {
             function format(date, pattern): string {
                 var iso = date == null ? '' : moment(date).format(pattern);
                 return iso;
@@ -383,7 +379,13 @@ module DatePickerModule {
                 formatter = monthFormat;
             }
 
-            $element.prop("type", type);
+            $element
+                .prop("type", type)
+                .on('change', () => {
+                    if ($ctrl.onDateSelect) $ctrl.onDateSelect({ date: $ctrl.date });
+                    if ($ctrl.onRangeSelect) $ctrl.onRangeSelect({ start: $ctrl.start, end: $ctrl.end });
+                    $scope.$apply();
+                });
 
             var setViewValue = (date) => {
                 var iso = formatter(date);
@@ -391,16 +393,16 @@ module DatePickerModule {
                 ngModelCtrl.$render();
             };
 
-            $scope.$watch(() => ctrl.date, date => {
+            $scope.$watch(() => $ctrl.date, date => {
                 setViewValue(date);
             });
 
             ngModelCtrl.$viewChangeListeners.push(() => {
                 var m = moment(ngModelCtrl.$viewValue);
-                ctrl.date = m.isValid() ? dateFormat(ngModelCtrl.$viewValue) : null;
+                $ctrl.date = m.isValid() ? dateFormat(ngModelCtrl.$viewValue) : null;
             });
 
-            setViewValue(ctrl.date || ctrl.defaultDate);
+            setViewValue($ctrl.date || $ctrl.defaultDate);
         }
 
         linkInput($scope, $element, $attrs, ngModelCtrl: angular.INgModelController) {
@@ -530,7 +532,7 @@ module DatePickerModule {
 
                 this.addEvent = (name, attr, ctrl) => {
                     if (typeof attr != "undefined")
-                        this.attrs.push(getVmAttr(name, ctrl));
+                        this.attrs.push(getAttr(name, attr));
                     return _builder;
                 }
 
@@ -548,7 +550,7 @@ module DatePickerModule {
                 .addEvent("on-date-select", $attrs.onDateSelect, "onDateSelect(date)")
                 .addBinding("start", $attrs.start, "start")
                 .addBinding("end", $attrs.end, "end")
-                .addEvent("on-rangeSelect", $attrs.onRangeSelect, "onRangeSelect(start,end)")
+                .addEvent("on-range-select", $attrs.onRangeSelect, "onRangeSelect(start,end)")
                 .addBinding("is-selecting", $attrs.isSelecting, "isSelecting")
                 .addLiteral("default-date", $attrs.defaultDate)
                 .addBinding("highlighted", $attrs.highlighted, "highlighted");
@@ -562,8 +564,6 @@ module DatePickerModule {
             $element.addClass('datepicker-linkNativeElement')
                 .removeAttr("href")
                 .append($input);
-
-            console.log(content);
         }
 
         linkElement($scope, $element, $attrs, ngModelCtrl) {

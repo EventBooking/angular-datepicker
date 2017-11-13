@@ -20,6 +20,14 @@ function TestController() {
 	this.time2 = '14:05:00';
 	this.time3 = '14:05:00';
 
+	this.onDateSelect = function(date) {
+		console.log('onDate', date);
+	}
+
+	this.onStartEndSelect = function(start,end) {
+		console.log('onStartEnd', start, end);
+	}
+
 	this.showTime4 = function() {
 		this.time4Submit = this.time4;
 	}
