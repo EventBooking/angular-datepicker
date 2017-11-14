@@ -75,7 +75,7 @@
 				<h4>Input</h4>
 				 <form name="timeForm1">
 					<input name="time1" type="text" time-picker time="vm.time1" ng-model="vm.timeModel1" />
-					<div>time = '{{vm.time}}'</div>
+					<div>time = '{{vm.time1}}'</div>
 					<div ng-if="timeForm1.$invalid">
 						<div ng-if="timeForm1.time1.$error.invalidTime">invalidTime</div>
 					</div>
@@ -84,7 +84,7 @@
 				<h4>Input (required)</h4>
 				<form name="timeForm2">
 					<input name="time1" type="text" time-picker time="vm.time2" ng-model="vm.timeModel2" required/>
-					<div>time = '{{vm.time}}'</div>
+					<div>time = '{{vm.time2}}'</div>
 					<div ng-if="timeForm2.$invalid">
 						<div ng-if="timeForm2.time1.$error.invalidTime">invalidTime</div>
 					</div>
@@ -93,7 +93,7 @@
 				<h4>Input (required={{vm.time3Required}})</h4>
 				<form name="timeForm3">
 					<input name="time1" type="text" time-picker time="vm.time3" ng-model="vm.timeModel3" ng-required="vm.time3Required" />
-					<div>time = '{{vm.time}}'</div>
+					<div>time = '{{vm.time3}}'</div>
 					<div ng-if="timeForm3.$invalid">
 						<div ng-if="timeForm3.time1.$error.invalidTime">invalidTime</div>
 					</div>
@@ -103,8 +103,23 @@
 				<h4>Submit test</h4>
 				<form name="timeForm4" ng-submit="vm.showTime4()" novalidate>
 					<input name="time4" type="text" time-picker time="vm.time4" ng-model="vm.timeModel4" />
-					<div>time = '{{vm.time4}}'</div>
+					<div>time = '{{vm.time4Submit}}'</div>
 					<input type="submit" name="" id="" value="Submit" /> <div ng-show="timeForm4.$submitted">submitted = '{{vm.time4Submit}}'</div>
+				</form>
+
+				<h4>ng-change vs on-change test</h4>
+				<form name="timeForm4" ng-submit="vm.time5Submit()" novalidate>
+					<input name="time4" 
+						type="text" 
+						time-picker 
+						time="vm.time5" 
+						ng-model="vm.timeModel5" 
+						ng-change="vm.ngChange5(vm.time5)"
+						on-change="vm.onChange5(time)" />
+					<div>time = '{{vm.time5}}'</div>
+					<div>ngChange5Result = '{{vm.ngChange5Result}}'</div>
+					<div>onChange5Result = '{{vm.onChange5Result}}'</div>
+					<input type="submit" name="" id="" value="Submit" />
 				</form>
 			</div>
 		</div>

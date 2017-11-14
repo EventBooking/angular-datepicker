@@ -3,6 +3,7 @@ module DatePickerModule {
 
     class TimePickerController {
         private $postLink() {
+            this.setViewValue(this._time);
             this.initialized = true;
         }
 
@@ -13,13 +14,18 @@ module DatePickerModule {
         }
 
         set time(value: string) {
+            const hasChanged = this._time !== value;
             this._time = value;
 
-            // if (this.initialized)
-            //     this.onChange(value);
+            if (this.initialized) {
+                this.setViewValue(value);
+                if (hasChanged)
+                    this.onChange({ time: value });
+            }
         }
 
-        onChange: (time: string) => void;
+        setViewValue: (time: string) => void;
+        onChange: (params: { time: string }) => void;
         private initialized: boolean;
     }
 
@@ -41,10 +47,7 @@ module DatePickerModule {
             onChange: '&'
         };
 
-        link = ($scope, $element, $attrs, ctrls: any[]) => {
-            var $ctrl: TimePickerController = ctrls[0],
-                $ngModelCtrl: angular.INgModelController = ctrls[1];
-
+        link = ($scope, $element, $attrs, [$ctrl, $ngModelCtrl]: [TimePickerController, angular.INgModelController]) => {
             if (this.isMobile) {
                 this.linkMobile($scope, $element, $attrs, $ctrl, $ngModelCtrl);
                 return;
@@ -56,62 +59,60 @@ module DatePickerModule {
         linkMobile = ($scope, $element, $attrs, $ctrl: TimePickerController, $ngModelCtrl: angular.INgModelController) => {
             $element.prop('type', 'time');
 
-            var setViewValue = (time) => {
-                var viewValue = this.timePickerService.formatIso(time);
+            const setViewValue = (time: string) => {
+                const viewValue = this.timePickerService.formatIso(time);
                 $ngModelCtrl.$setViewValue(viewValue);
                 $ngModelCtrl.$render();
             }
 
-            $scope.$watch(() => $ctrl.time, time => {
-                setViewValue(time);
-            });
+            $ctrl.setViewValue = setViewValue;
 
             $ngModelCtrl.$viewChangeListeners.push(() => {
-                var iso = this.timePickerService.formatIso($ngModelCtrl.$viewValue, null);
-                $ctrl.time = iso;
+                $ctrl.time = this.timePickerService.formatIso($ngModelCtrl.$viewValue, null);
             });
-
-            setViewValue($ctrl.time);
         };
 
-        linkDesktop = ($scope, $element, $attrs, $ctrl: TimePickerController, $ngModelCtrl: angular.INgModelController) => {
+        linkDesktop = ($scope, $element: angular.IAugmentedJQuery, $attrs, $ctrl: TimePickerController, $ngModelCtrl: angular.INgModelController) => {
+            const eventId = (...names: string[]) => {
+                return names.map(name => `${name}.${$scope.$id}`).join(' ');
+            };
 
             const update = () => {
-                var m = this.timePickerService.parse($ngModelCtrl.$modelValue);
-                $ctrl.time = m.isValid() ? m.format("HH:mm:ss") : null;
+                $ctrl.time = this.timePickerService.formatIso($ngModelCtrl.$modelValue, null);
 
-                setViewValue($ngModelCtrl.$modelValue);
-
-                var isRequired = $attrs['required'];
-                var isValid = !isRequired || (isRequired && m.isValid());
-
+                const isValidTime = $ctrl.time != null
+                const isRequired = $attrs['required'];
+                const isValid = !isRequired || (isRequired && isValidTime);
                 $ngModelCtrl.$setValidity('invalidTime', isValid);
-                $scope.$apply();
-            }
 
-            $element.on(`blur.${$scope.$id}`, update);
-            $element.on(`keydown.${$scope.$id} keydown.${$scope.$id}`, e => {
-                if (e.which !== 13)
+                $scope.$apply();
+            };
+
+            const updateOnEnter = (e) => {
+                const ENTER_KEY = 13;
+                const keyDown = e => e.which;
+                
+                if (keyDown(e) !== ENTER_KEY)
                     return;
 
                 update();
-            });
+            }
 
-            $scope.$on('$destroy', () => {
-                $element.off(`blur.${$scope.$id}`);
-            });
-
-            var setViewValue = (value) => {
-                var viewValue = this.timePickerService.format(value);
+            const setViewValue = (time: string) => {
+                const viewValue = this.timePickerService.format(time);
                 $ngModelCtrl.$setViewValue(viewValue);
                 $ngModelCtrl.$render();
             }
 
-            $scope.$watch(() => $ctrl.time, time => {
-                setViewValue(time);
-            });
+            $ctrl.setViewValue = setViewValue;
 
-            setViewValue($ctrl.time);
+            $element
+                .on(eventId('blur'), update)
+                .on(eventId('keydown'), updateOnEnter);
+
+            $scope.$on('$destroy', () => {
+                $element.off(eventId('blur', 'keydown'));
+            });
         };
 
     }

@@ -31,6 +31,19 @@ function TestController() {
 	this.showTime4 = function() {
 		this.time4Submit = this.time4;
 	}
+
+	this.time5Submit = function() {
+		console.log('time5', this.time5);
+	}
+	
+	this.ngChange5 = function() {
+		console.log('ngChange5Result', this.time5);
+		this.ngChange5Result = this.time5;
+	}
+
+	this.onChange5 = function(time) {
+		this.onChange5Result = time;
+	}
 }
 
 angular.module("demo", ["ngAnimate", "ngDatePicker"])
