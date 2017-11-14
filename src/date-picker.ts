@@ -381,7 +381,7 @@ module DatePickerModule {
 
             $element
                 .prop("type", type)
-                .on('change', () => {
+                .on('blur', () => {
                     if ($ctrl.onDateSelect) $ctrl.onDateSelect({ date: $ctrl.date });
                     if ($ctrl.onRangeSelect) $ctrl.onRangeSelect({ start: $ctrl.start, end: $ctrl.end });
                     $scope.$apply();
