@@ -13,20 +13,20 @@
 			<div>
 				<h4>Date</h4> {{vm.date}}
 	
-				<h4>Element - date</h4>
-				<a href="#" date-picker date="vm.date" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date)">{{vm.date}}</a>
+				<h4>Element - date <a href ng-click="vm.setDate()">reset</a></h4>
+				<a href="#" date-picker date="vm.date" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date, '1')">{{vm.date}}</a>
 
 				<h4>Element - start/end</h4>
 				<div date-picker start="vm.start" end="vm.end" on-range-select="vm.onStartEndSelect(start,end)" highlighted="vm.highlighted">{{vm.start}}</div>
 	
 				<h4>Input date 1</h4>
 				<div>date='{{vm.date}}', element='{{vm.dateModel}}'</div>
-				<input type="text" date-picker date="vm.date" ng-model="vm.dateModel" on-date-select="vm.onDateSelect(date)" highlighted="vm.highlighted" />
-				<date-picker date="vm.date" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date)"></date-picker>
+				<input type="text" date-picker date="vm.date" ng-model="vm.dateModel" on-date-select="vm.onDateSelect(date, '2')" highlighted="vm.highlighted" />
+				<date-picker date="vm.date" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date, '3')"></date-picker>
 
 				<h4>Input date 2 (with default)</h4>
 				<input type="text" date-picker date="vm.date2" default-date="2016-02-10" ng-model="vm.dateModel2" highlighted="vm.highlighted" />
-				<date-picker date="vm.date2" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date)"></date-picker>
+				<date-picker date="vm.date2" highlighted="vm.highlighted" on-date-select="vm.onDateSelect(date, '4')"></date-picker>
 
 				<h4>Input date 3</h4>
 				<div>date='{{vm.date3}}', element='{{vm.dateModel3}}'</div>

@@ -20,8 +20,12 @@ function TestController() {
 	this.time2 = '14:05:00';
 	this.time3 = '14:05:00';
 
-	this.onDateSelect = function(date) {
-		console.log('onDate', date);
+	this.setDate = function() {
+		this.date = '2015-12-01';
+	}
+
+	this.onDateSelect = function(date, ctrl) {
+		console.log('onDate', ctrl, date);
 	}
 
 	this.onStartEndSelect = function(start,end) {

@@ -183,7 +183,7 @@ module DatePickerModule {
             days.forEach(day => day.isSelecting = true);
         }
 
-        inputToMoment(value: string): any {
+        inputToMoment(value: string): moment.Moment {
             var lang = moment.localeData();
             var formats = [
                 lang.longDateFormat("l")
