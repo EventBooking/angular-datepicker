@@ -377,9 +377,9 @@ module DatePickerModule {
     Angular.module("ngDatePicker").controller('datePicker', DatePickerController);
 
     class DatePickerDirective {
-        static $inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService', 'isMobile'];
+        static $inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService', 'isMobile', 'isIOS'];
 
-        constructor(private $injector, private $compile, private $templateCache, private $timeout, private $window, private datePickerService: IDatePickerService, private isMobile: boolean) { }
+        constructor(private $injector, private $compile, private $templateCache, private $timeout, private $window, private datePickerService: IDatePickerService, private isMobile: boolean, private isIOS: boolean) { }
 
         restrict = 'AE';
         require = ['datePicker', '?ngModel'];
@@ -424,8 +424,10 @@ module DatePickerModule {
             else if (this.isElement($element)) {
                 this.linkInline($scope, $element, $attrs, $ngModel, $ctrl);
             }
-            else {
+            else if (this.isIOS) {
                 this.linkNativeElement($scope, $element, $attrs, $ngModel, $ctrl);
+            } else {
+                this.linkElement($scope, $element, $attrs, $ngModel, $ctrl);
             }
         }
 
@@ -439,7 +441,9 @@ module DatePickerModule {
             else {
                 this.linkElement($scope, $element, $attrs, $ngModel, $ctrl);
             }
+        }
 
+        setupSelections($scope: angular.IScope, $element: angular.IAugmentedJQuery, $ctrl: DatePickerController) {
             if ($ctrl.isSingleDate) {
                 this.setupDaySelect($scope, $element, $ctrl);
             } else {
@@ -494,7 +498,7 @@ module DatePickerModule {
         }
 
         linkInput($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController, $ctrl: DatePickerController) {
-            const format = (date:moment.Moment) => date.format("L");
+            const format = (date: moment.Moment) => date.format("L");
 
             const setViewDate = (date) => {
                 var text = date == null ? '' : format(moment(date));
@@ -656,7 +660,7 @@ module DatePickerModule {
         }
 
         linkInline($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController, $ctrl: DatePickerController) {
-            const content = this.createContent($scope);
+            const content = this.createContent($scope, $element, $ctrl);
             $element.append(content);
         }
 
@@ -692,6 +696,31 @@ module DatePickerModule {
                 $scope.$apply();
             });
 
+            const createContent = () => {
+                content = this.createDropDown($scope, $element, $attrs, $ctrl);
+                $body.append(content);
+                $scope.$apply();
+
+                if (this.isMobile)
+                    return;
+
+                tether = new Tether({
+                    target: $element,
+                    targetAttachment: 'bottom center',
+                    element: content,
+                    attachment: 'top center',
+                    classPrefix: 'datepicker',
+                    targetOffset: '14px 0',
+                    constraints: [
+                        {
+                            to: 'window',
+                            attachment: 'together',
+                            pin: ['top', 'left', 'bottom', 'right']
+                        }
+                    ]
+                });
+            }
+
             $element.on(`focus.${$scope.$id}`, () => {
                 if (doNotReopen)
                     return;
@@ -699,29 +728,13 @@ module DatePickerModule {
                 $ctrl.isVisible = true;
 
                 if (!content) {
-                    content = this.createDropDown($scope, $element, $attrs, $ctrl);
-                    $body.append(content);
-                    $scope.$apply();
-
-                    tether = new Tether({
-                        target: $element,
-                        targetAttachment: 'bottom center',
-                        element: content,
-                        attachment: 'top center',
-                        classPrefix: 'datepicker',
-                        targetOffset: '14px 0',
-                        constraints: [
-                            {
-                                to: 'window',
-                                attachment: 'together',
-                                pin: ['top', 'left', 'bottom', 'right']
-                            }
-                        ]
-                    });
+                    createContent();
                 }
 
                 $scope.$apply();
-                tether.position();
+
+                if (tether)
+                    tether.position();
             });
 
             var blurTimer;
@@ -762,17 +775,26 @@ module DatePickerModule {
             var singleDateBinding = `date="${this.controllerAs}.date" on-date-select="${this.controllerAs}.dateSelected(date)"`,
                 rangeBinding = `start="${this.controllerAs}.start" end="${this.controllerAs}.end" on-range-select="${this.controllerAs}.rangeSelected(start,end)"`,
                 bindings = $ctrl.isSingleDate ? singleDateBinding : rangeBinding,
-                template = `<div class="datepicker-dropdown" ng-class="{'datepicker-open':${this.controllerAs}.isVisible}"><date-picker min-view="${$attrs['minView']}" is-selecting="${this.controllerAs}.isSelecting" ${bindings}" highlighted="${this.controllerAs}.highlighted" default-date="{{${this.controllerAs}.defaultDate}}"></date-picker></div>`,
-                position = $element.position(),
-                height = $element.outerHeight(),
-                margin = ($element.outerHeight(true) - height),
-                offset = margin / 2 + height;
+                template = `<div ng-class="{'datepicker-open':${this.controllerAs}.isVisible}"><date-picker min-view="${$attrs['minView']}" is-selecting="${this.controllerAs}.isSelecting" ${bindings}" highlighted="${this.controllerAs}.highlighted" default-date="{{${this.controllerAs}.defaultDate}}"></date-picker></div>`;
 
             const content = angular.element(template);
-            content.css({
-                top: position.top + offset,
-                left: position.left
-            });
+
+            content.addClass("datepicker-dropdown");
+
+            if (this.isMobile) {
+                content.addClass("datepicker-dropdown--isMobile");
+            } else {
+                const position = $element.position(),
+                    height = $element.outerHeight(),
+                    margin = ($element.outerHeight(true) - height),
+                    offset = margin / 2 + height;
+
+                content.css({
+                    top: position.top + offset,
+                    left: position.left
+                });
+            }
+
             this.$compile(content)($scope);
 
             return content;
@@ -788,10 +810,11 @@ module DatePickerModule {
             return e.which === 27;
         }
 
-        createContent($scope: angular.IScope): angular.IAugmentedJQuery {
+        createContent($scope: angular.IScope, $element: angular.IAugmentedJQuery, $ctrl: DatePickerController): angular.IAugmentedJQuery {
             const template = this.$templateCache.get(this.calendarTemplate);
             const content = angular.element(template);
             this.$compile(content)($scope);
+            this.setupSelections($scope, $element, $ctrl);
             return content;
         }
 

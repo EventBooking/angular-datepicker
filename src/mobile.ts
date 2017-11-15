@@ -9,7 +9,15 @@ module DatePickerModule {
 
             return test1 || test2;
         }
+
+        static isIOS(): boolean {
+            var agent = navigator.userAgent || navigator.vendor || window["opera"];
+            var test1 = /iPhone|iPod|iPad/i.test(agent);
+            return test1;
+        }
     }
 
-    Angular.module("ngDatePicker").constant('isMobile', MobileConfig.isMobile());
+    Angular.module("ngDatePicker")
+        .constant('isMobile', MobileConfig.isMobile())
+        .constant('isIOS', MobileConfig.isIOS());
 }

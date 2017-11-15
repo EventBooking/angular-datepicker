@@ -143,6 +143,7 @@
 }
 
 .datePickerDays-week {
+    display: flex;
     outline: none;
     margin: 0;
     padding: 0;
@@ -313,19 +314,42 @@
     }
 }
 
+date-picker {
+    display: inline-flex;
+    background-color: @datepicker-bg;
+    
+    .datepicker-dropdown & {
+        padding: 5px;
+        border: solid 1px @datepicker-border-color;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+        border-radius: 2px;
+    }
+}
+
 /*datepicker-dropdown*/
 
 .datepicker-dropdown {
-    background-color: @datepicker-bg;
-    padding: 5px;
-    border: solid 1px @datepicker-border-color;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
-    border-radius: 2px;
     display: none;
     z-index: @datepicker-zIndex;
     
     &.datepicker-open {
         display: block;
+    }
+
+    &--isMobile {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 999;
+        background-color: fade(#000, 25%);
+
+        &.datepicker-open {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     }
 }
 
