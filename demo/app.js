@@ -10,12 +10,13 @@ function Run($rootScope, isIOS) {
 	$rootScope.vm = new TestController();
 
 	if (isIOS)
-		overrideConsole();
+		overrideConsole($rootScope);
 }
 
-function overrideConsole() {
+function overrideConsole($rootScope) {
 	var $element = angular.element(`<div></div>`)
 		.addClass("debugConsole");
+	var element = $element.get(0);
 	angular.element('body').append($element);
 
 	var _log = console.log;
@@ -31,10 +32,11 @@ function overrideConsole() {
 			.addClass("debugConsole-log")
 			.text(values);
 		$element.append($log);
+		element.scrollTop = element.scrollHeight;
 		_log(...arguments);
 	};
 
-	console.log = log;
+	console.log = log;	
 }
 
 function TestController() {
@@ -84,3 +86,4 @@ function TestController() {
 angular.module("demo", ["ngAnimate", "ngDatePicker"])
 	.config(Config)
 	.run(Run);
+

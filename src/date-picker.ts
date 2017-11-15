@@ -490,11 +490,17 @@ module DatePickerModule {
             $element.prop("type", type);
             $ctrl.setViewDate = setViewDate;
 
-            $ngModel.$viewChangeListeners.push(() => {
+            const setDateFromView = () => {
                 var viewValue = moment($ngModel.$viewValue);
                 const date = viewValue.isValid() ? dateFormat($ngModel.$viewValue) : null;
                 $ctrl.setDate(date);
-            });
+            };
+
+            // if (this.isIOS) {
+            //     $element.on(`blur.${$scope.$id}`, setDateFromView);
+            // } else {
+                $ngModel.$viewChangeListeners.push(setDateFromView);
+            //}
         }
 
         linkInput($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController, $ctrl: DatePickerController) {
@@ -628,25 +634,33 @@ module DatePickerModule {
                 }
             }
 
+            $ctrl['__date'] = $ctrl.date;
+            $ctrl['__start'] = $ctrl.date;
+            $ctrl['__end'] = $ctrl.date;
+
             const builder = new TypeBuilder()
                 .addAttr("type", "text")
                 .addLiteral("min-view", "minView")
                 .addBinding("ng-model", true, "dateString")
-                .addBinding("date", "date", "date")
-                // .addProxy("dateSelected", (date) => $ctrl.onDateSelect({ date: date }))
-                // .addEvent("on-date-select", "onDateSelect", "dateSelected(date)")
-                .addBinding("start", "start", "start")
-                .addBinding("end", "end", "end")
-                // .addProxy("rangeSelected", (start, end) => $ctrl.onRangeSelect({ start: start, end: end }))
-                // .addEvent("on-range-select", "onRangeSelect", "rangeSelected(start,end)")
+                .addBinding("date", "date", "__date")
+                .addBinding("start", "start", "__start")
+                .addBinding("end", "end", "__end")
                 .addBinding("is-selecting", "isSelecting", "isSelecting")
                 .addLiteral("default-date", "defaultDate")
                 .addBinding("highlighted", "highlighted", "highlighted");
 
             const content = builder.build();
-
+            
             const $input = angular.element(content)
                 .addClass('datepicker-linkNativeElement-input');
+
+            if(this.isIOS) {
+                $input.on(`blur.${$scope.$id}`, () => {
+                    $ctrl.setDate($ctrl['__date']);
+                    $scope.$apply();
+                })
+            }
+            
             this.$compile($input)($scope);
 
             $element.addClass('datepicker-linkNativeElement')
