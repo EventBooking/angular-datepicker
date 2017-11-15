@@ -119,18 +119,26 @@ module DatePickerModule {
         }
 
         setDate(date: string | Date) {
+            const hasChanged = this._date !== date;
+            if(!hasChanged)
+                return;
+
             this._date = date;
             this._start = date;
             this._end = date;
 
             this.setDateInternal(this._date);
             this.setViewDate(date);
-            
+
             if (this.initialized && this.onDateSelect)
                 this.onDateSelect({ date: date });
         }
 
         setRange(start: string | Date, end: string | Date) {
+            const hasChanged = this._start !== start || this._end !== end;
+            if(!hasChanged)
+                return;
+
             this._date = start;
             this._start = start;
             this._end = end;
