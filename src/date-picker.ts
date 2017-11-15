@@ -388,12 +388,12 @@ module DatePickerModule {
         bindToController = true;
         scope = {
             // Single Date
-            'date': '=?date',
+            date: '=?',
             onDateSelect: '&',
 
             // Range
-            'start': '=?start',
-            'end': '=?end',
+            start: '=?',
+            end: '=?',
             onRangeSelect: '&',
 
             // Other

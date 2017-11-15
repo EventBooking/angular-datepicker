@@ -35,3 +35,19 @@ h3 {
 h4 {
 	font-size: 1.3rem;
 }
+
+.debugConsole {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: #fff;
+}
+
+/* show last 5 entries */
+.debugConsole-log:nth-last-child(-n+5) {
+	border-top-style: solid;
+	border-width: 1px;
+	border-color: gray;
+	padding: .25em .5em;
+}
