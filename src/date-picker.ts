@@ -302,9 +302,9 @@ module DatePickerModule {
     Angular.module("ngDatePicker").controller('datePicker', DatePickerController);
 
     class DatePickerDirective {
-        static $inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService', 'isMobile'];
+        static $inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService', 'isMobile', 'isIOS'];
 
-        constructor(private $injector, private $compile, private $templateCache, private $timeout, private $window, private datePickerService: IDatePickerService, private isMobile: boolean) { }
+        constructor(private $injector, private $compile, private $templateCache, private $timeout, private $window, private datePickerService: IDatePickerService, private isMobile: boolean, private isIOS: boolean) { }
 
         restrict = 'AE';
         require = ['?ngModel', 'datePicker'];
@@ -379,9 +379,11 @@ module DatePickerModule {
                 formatter = monthFormat;
             }
 
+            const changeEvent = this.isIOS ? 'blur' : 'change';
+
             $element
                 .prop("type", type)
-                .on('blur', () => {
+                .on(changeEvent, () => {
                     if ($ctrl.onDateSelect) $ctrl.onDateSelect({ date: $ctrl.date });
                     if ($ctrl.onRangeSelect) $ctrl.onRangeSelect({ start: $ctrl.start, end: $ctrl.end });
                     $scope.$apply();
