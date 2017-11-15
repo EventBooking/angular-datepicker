@@ -26,7 +26,7 @@ module DatePickerModule {
             }
         }
 
-        setViewValue: (time: string) => void;
+        setViewValue: (time: string) => {};
         onChange: (params: { time: string }) => void;
         private initialized: boolean;
     }
