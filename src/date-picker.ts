@@ -351,7 +351,7 @@ module DatePickerModule {
                 linkRun(this.linkInline);
             }
             else {
-                linkRun(this.isMobile ? this.linkNativeElement : this.linkElement);
+                linkRun((this.isMobile && this.isIOS) ? this.linkNativeElement : this.linkElement);
             }
 
             if ($ctrl.isSingleDate) {
