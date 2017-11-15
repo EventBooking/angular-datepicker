@@ -196,6 +196,9 @@
   font-size: 0.75rem;
 }
 .datePickerDays-week {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   outline: none;
   margin: 0;
   padding: 0;
