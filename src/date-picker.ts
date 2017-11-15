@@ -120,7 +120,7 @@ module DatePickerModule {
 
         setDate(date: string | Date) {
             const hasChanged = this._date !== date;
-            if(!hasChanged)
+            if (!hasChanged)
                 return;
 
             this._date = date;
@@ -136,7 +136,7 @@ module DatePickerModule {
 
         setRange(start: string | Date, end: string | Date) {
             const hasChanged = this._start !== start || this._end !== end;
-            if(!hasChanged)
+            if (!hasChanged)
                 return;
 
             this._date = start;
@@ -175,11 +175,11 @@ module DatePickerModule {
             this.years = this.datePickerService.getYears(fromDate);
         }
 
-        setViewDate (date) {
+        setViewDate(date) {
             // override in link functions
         };
 
-        setViewRange (start, end) {
+        setViewRange(start, end) {
             // override in link functions
         };
 
@@ -494,50 +494,38 @@ module DatePickerModule {
         }
 
         linkInput($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController, $ctrl: DatePickerController) {
-            this.popover($scope, $element, $attrs, $ctrl);
+            const format = (date:moment.Moment) => date.format("L");
 
-            if ($ctrl.isSingleDate) {
-                const setViewValue = (date) => {
-                    var text = date == null ? '' : moment(date).format("L");
-                    ngModelCtrl.$setViewValue(text);
-                    ngModelCtrl.$render();
-                };
+            const setViewDate = (date) => {
+                var text = date == null ? '' : format(moment(date));
+                ngModelCtrl.$setViewValue(text);
+                ngModelCtrl.$render();
+            };
 
-                $scope.$watch(() => $ctrl.date, date => {
-                    setViewValue(date);
-                });
-            } else {
-                const setViewValue = (start, end) => {
+            const setViewRange = (start, end) => {
+                var text = '';
+                if (start != null && end != null) {
+                    var mStart = moment(start),
+                        mEnd = moment(end);
 
-                    var text = '';
-                    if (start != null && end != null) {
-                        var mStart = moment(start),
-                            mEnd = moment(end);
-
-                        if (mStart.isSame(end, 'day')) {
-                            text = mStart.format("L");
-                        } else {
-                            text = `${mStart.format("L")} - ${mEnd.format("L")}`;
-                        }
-
-                    } else if (start != null) {
-                        text = moment(end).format("L");
-                    } else if (end != null) {
-                        text = moment(end).format("L");
+                    if (mStart.isSame(end, 'day')) {
+                        text = format(mStart);
+                    } else {
+                        text = `${format(mStart)} - ${format(mEnd)}`;
                     }
 
-                    ngModelCtrl.$setViewValue(text);
-                    ngModelCtrl.$render();
-                };
+                } else if (start != null) {
+                    text = format(moment(end));
+                } else if (end != null) {
+                    text = format(moment(end));
+                }
 
-                $scope.$watch(() => $ctrl.start, start => {
-                    setViewValue(start, $ctrl.end);
-                });
+                ngModelCtrl.$setViewValue(text);
+                ngModelCtrl.$render();
+            };
 
-                $scope.$watch(() => $ctrl.end, end => {
-                    setViewValue($ctrl.start, end);
-                });
-            }
+            $ctrl.setViewDate = setViewDate;
+            $ctrl.setViewRange = setViewRange;
 
             $element.on(`change.${$scope.$id}`, () => {
                 if ($ctrl.isSingleDate) {
@@ -585,6 +573,8 @@ module DatePickerModule {
                 $scope.$apply();
                 return this.preventDefault(e);
             });
+
+            this.popover($scope, $element, $attrs, $ctrl);
         }
 
         linkNativeElement($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController, $ctrl: DatePickerController) {
@@ -610,7 +600,7 @@ module DatePickerModule {
                 }
 
                 this.addBinding = (name, attr, ctrl) => {
-                    if(typeof attr == "string")
+                    if (typeof attr == "string")
                         attr = $attrs[attr];
                     if (typeof attr != "undefined")
                         this.attrs.push(getVmAttr(name, ctrl));

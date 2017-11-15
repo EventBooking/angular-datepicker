@@ -24,6 +24,10 @@ function TestController() {
 		this.date = '2015-12-01';
 	}
 
+	this.setDate1 = function() {
+		this.date1 = '2015-12-01';
+	}
+
 	this.onDateSelect = function(date, ctrl) {
 		console.log('onDate', ctrl, date);
 	}

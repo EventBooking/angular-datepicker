@@ -15,12 +15,14 @@ module DatePickerModule {
 
         set time(value: string) {
             const hasChanged = this._time !== value;
+            if (!hasChanged)
+                return;
+
             this._time = value;
+            this.setViewValue(value);
 
             if (this.initialized) {
-                this.setViewValue(value);
-                if (hasChanged)
-                    this.onChange({ time: value });
+                this.onChange({ time: value });
             }
         }
 
@@ -91,7 +93,7 @@ module DatePickerModule {
             const updateOnEnter = (e) => {
                 const ENTER_KEY = 13;
                 const keyDown = e => e.which;
-                
+
                 if (keyDown(e) !== ENTER_KEY)
                     return;
 
