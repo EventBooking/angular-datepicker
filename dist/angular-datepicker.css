@@ -247,6 +247,9 @@
   display: inline-block;
 }
 .datePickerMonths-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   outline: none;
   margin: 10px 0;
   padding: 0;
@@ -302,6 +305,9 @@
   display: inline-block;
 }
 .datePickerYears-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   outline: none;
   margin: 10px 0;
   padding: 0;
