@@ -32,7 +32,8 @@ describe('Datepicker', function () {
             var $ctrl = $controller('datePicker', {
                 '$attrs': $attrs
             });
-            $ctrl.onInit();
+            $ctrl.$onInit();
+            $ctrl.$postLink();
 
             var dateInternal = $ctrl.dateInternal.format('YYYY-MM-DD');
             var today = moment().format('YYYY-MM-DD');
@@ -59,7 +60,8 @@ describe('Datepicker', function () {
                 'datePickerService': datePickerService
             });
             $ctrl.defaultDate = '2016-02-10';
-            $ctrl.onInit();
+            $ctrl.$onInit();
+            $ctrl.$postLink();
 
             var dateInternal = $ctrl.dateInternal.format('YYYY-MM-DD');
 
@@ -85,7 +87,8 @@ describe('Datepicker', function () {
                 'datePickerService': datePickerService
             });
             $ctrl.defaultDate = "";
-            $ctrl.onInit();
+            $ctrl.$onInit();
+            $ctrl.$postLink();
 
             var dateInternal = $ctrl.dateInternal.format('YYYY-MM-DD');
             var today = moment().format('YYYY-MM-DD');

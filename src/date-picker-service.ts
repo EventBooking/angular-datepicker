@@ -197,6 +197,15 @@ module DatePickerModule {
             ];
 
             var date = moment(value, formats);
+            
+            var year = date.year();
+            if(year < 10) {
+                var currentYear = moment().year();
+                var addYears = currentYear - (currentYear%10);
+                var newYear = year + addYears;
+                date.set('year', newYear);
+            }
+
             return date;
         }
 
