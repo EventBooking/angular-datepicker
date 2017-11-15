@@ -42,12 +42,20 @@ h4 {
 	left: 0;
 	right: 0;
 	background-color: #fff;
+	max-height: 150px;
+	overflow: auto;
+	border-top-style: solid;
+	border-width: 2px;
+	border-color: gray;
 }
 
 /* show last 5 entries */
-.debugConsole-log:nth-last-child(-n+5) {
+.debugConsole-log {
+	padding: .25em .5em;
+}
+
+.debugConsole-log + .debugConsole-log {
 	border-top-style: solid;
 	border-width: 1px;
 	border-color: gray;
-	padding: .25em .5em;
 }

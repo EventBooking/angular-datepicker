@@ -9,8 +9,8 @@ Run.$inject = ['$rootScope', 'isIOS'];
 function Run($rootScope, isIOS) {
 	$rootScope.vm = new TestController();
 
-	//if (isIOS)
-	overrideConsole();
+	if (isIOS)
+		overrideConsole();
 }
 
 function overrideConsole() {
@@ -23,9 +23,7 @@ function overrideConsole() {
 		var values = arguments.map(x => {
 			if (typeof (x) == "undefined")
 				return "undefined";
-			if(typeof(x) == "string")
-				return x;
-			if(typeof(x) == "object")
+			if (typeof (x) == "object")
 				return JSON.stringify(x);
 			return x;
 		}).join(", ");
