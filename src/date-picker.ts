@@ -629,7 +629,7 @@ module DatePickerModule {
                 }
 
                 this.build = () => {
-                    const content = `<input date-picker ${this.attrs.join(' ')} required>`;
+                    const content = `<input date-picker ${this.attrs.join(' ')}>`;
                     return content;
                 }
             }
