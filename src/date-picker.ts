@@ -48,9 +48,9 @@ module DatePickerModule {
 
     class DatePickerController {
 
-        static $inject = ['$attrs', 'datePickerService'];
+        static $inject = ['$element', '$attrs', 'datePickerService'];
 
-        constructor(private $attrs: angular.IAttributes, private datePickerService: IDatePickerService) {
+        constructor(private $element: angular.IAugmentedJQuery, private $attrs: angular.IAttributes, private datePickerService: IDatePickerService) {
             DatePickerMouseRange.bootstrap(datePickerService);
 
             this.isSingleDate = ($attrs['start'] == null && $attrs['end'] == null);
@@ -78,18 +78,19 @@ module DatePickerModule {
                 this.defaultDate = null;
 
             const dateInternal = (this.isSingleDate ? this.date : this.start) || this.defaultDate;
-            this.initialized = true;
 
             this.setDateInternal(dateInternal);
+            this.calculate(this._dateInternal);
         }
 
         $postLink() {
             if (this.isSingleDate) {
                 this.setViewDate(this.date || this.defaultDate);
-                return;
+            } else {
+                const start = this.start || this.defaultDate;
+                this.setViewRange(start, this.end || start);
             }
-            const start = this.start || this.defaultDate;
-            this.setViewRange(start, this.end || start)
+            this.initialized = true;
         }
 
         // Single Date
@@ -98,7 +99,7 @@ module DatePickerModule {
             return this._date;
         }
         public set date(value: string | Date) {
-            this.setDate(value);
+            this.setDate(value, false);
         }
 
         // Range
@@ -107,7 +108,7 @@ module DatePickerModule {
             return this._start;
         }
         public set start(value: string | Date) {
-            this.setRange(value, this._end);
+            this.setRange(value, this._end, false);
         }
 
         _end: string | Date;
@@ -115,10 +116,10 @@ module DatePickerModule {
             return this._end;
         }
         public set end(value: string | Date) {
-            this.setRange(this._start, value);
+            this.setRange(this._start, value, false);
         }
 
-        setDate(date: string | Date) {
+        setDate(date: string | Date, notify: boolean = true) {
             const hasChanged = this._date !== date;
             if (!hasChanged)
                 return;
@@ -132,10 +133,14 @@ module DatePickerModule {
 
             this.setDateInternal(date);
             this.setViewDate(date);
+
+            if(!notify)
+                return;
+
             this.notifyChanges(date, start, end);
         }
 
-        setRange(start: string | Date, end: string | Date) {
+        setRange(start: string | Date, end: string | Date, notify: boolean = true) {
             const hasChanged = this._start !== start || this._end !== end;
             if (!hasChanged)
                 return;
@@ -148,11 +153,15 @@ module DatePickerModule {
 
             this.setDateInternal(date);
             this.setViewRange(start, end);
+            
+            if(!notify)
+                return;
+                
             this.notifyChanges(date, start, end);
         }
 
         private notifyChanges(date: string | Date, start: string | Date, end: string | Date) {
-            if(!this.initialized)
+            if (!this.initialized)
                 return;
 
             if (this.onDateSelect)
@@ -433,12 +442,10 @@ module DatePickerModule {
         linkMobile = ($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, $ngModel: angular.INgModelController, $ctrl: DatePickerController) => {
             if (this.isInput($element)) {
                 this.linkNativeInput($scope, $element, $attrs, $ngModel, $ctrl);
-            }
-            else if (this.isElement($element)) {
+            } else if (this.isElement($element)) {
                 this.linkInline($scope, $element, $attrs, $ngModel, $ctrl);
-            }
-            else if (this.isIOS) {
-                this.linkNativeElement($scope, $element, $attrs, $ngModel, $ctrl);
+                // } else if (this.isIOS) {
+                //     this.linkNativeElement($scope, $element, $attrs, $ngModel, $ctrl);
             } else {
                 this.linkElement($scope, $element, $attrs, $ngModel, $ctrl);
             }
@@ -512,7 +519,7 @@ module DatePickerModule {
             // if (this.isIOS) {
             //     $element.on(`blur.${$scope.$id}`, setDateFromView);
             // } else {
-                $ngModel.$viewChangeListeners.push(setDateFromView);
+            $ngModel.$viewChangeListeners.push(setDateFromView);
             //}
         }
 
@@ -663,17 +670,17 @@ module DatePickerModule {
                 .addBinding("highlighted", "highlighted", "highlighted");
 
             const content = builder.build();
-            
+
             const $input = angular.element(content)
                 .addClass('datepicker-linkNativeElement-input');
 
-            if(this.isIOS) {
+            if (this.isIOS) {
                 $input.on(`blur.${$scope.$id}`, () => {
                     $ctrl.setDate($ctrl['__date']);
                     $scope.$apply();
                 })
             }
-            
+
             this.$compile($input)($scope);
 
             $element.addClass('datepicker-linkNativeElement')
@@ -702,18 +709,75 @@ module DatePickerModule {
                 tether,
                 $body: any = angular.element('body');
 
-            var doNotReopen = false;
-            const onSelect = () => {
-                $ctrl.isVisible = false;
-                doNotReopen = true;
-                $element.focus();
-                doNotReopen = false;
+            const evt = (name: string) => `${name}.datepicker`;
+            const events = {
+                mousedown: evt('mousedown'),
+                focus: evt('focus'),
+                click: evt('click'),
+                blur: evt('blur'),
+                mouseup: evt('mouseup')
+            };
+            console.log(events);
+
+            const state = {
+                isMouseDown: false,
+                hasFocus: false,
+                contentHasFocus: false
             };
 
-            $element.on(`click.${$scope.$id}`, () => {
+            const listenOpen = () => {
+                $element
+                    .on(events.mousedown, onMouseDown)
+                    .on(events.focus, onFocus);
+
+                $element.off(events.blur, onBlur);
+                $body.off(events.mouseup, onBodyClick);
+            }
+
+            const listenClose = () => {
+                $element
+                    .off(events.mousedown, onMouseDown)
+                    .off(events.focus, onFocus);
+
+                $element.one(events.blur, onBlur);
+                $body.one(events.mouseup, onBodyClick);
+            }
+
+            const open = (e: JQueryEventObject): boolean => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if ($ctrl.isVisible)
+                    return;
+
                 $ctrl.isVisible = true;
+
+                if (!content) {
+                    createContent();
+                }
+
                 $scope.$apply();
-            });
+
+                if (tether) {
+                    tether.position();
+                }
+
+                listenClose();
+
+                return false;
+            };
+
+            var blurTimer;
+            const close = (e: JQueryEventObject) => {
+                if (!$ctrl.isVisible)
+                    return;
+
+                $ctrl.isVisible = false;
+                
+                listenOpen();
+
+                $scope.$apply();
+            };
 
             const createContent = () => {
                 content = this.createDropDown($scope, $element, $attrs, $ctrl);
@@ -738,54 +802,55 @@ module DatePickerModule {
                         }
                     ]
                 });
+
+                content.on(events.mousedown, (e) => {
+                    state.contentHasFocus = true;
+                });
+
+                content.on(events.mouseup, (e) => {
+                    state.contentHasFocus = false;
+                    $element.focus();
+                    close(e);
+                });
             }
 
-            $element.on(`focus.${$scope.$id}`, () => {
-                if (doNotReopen)
+            const onMouseDown = (e:JQueryEventObject) => {
+                if(state.hasFocus)
                     return;
 
-                $ctrl.isVisible = true;
+                state.isMouseDown = true;
+                $element.one(events.mouseup, onMouseUp);
+            };
 
-                if (!content) {
-                    createContent();
-                }
+            const onMouseUp = (e: JQueryEventObject) => {
+                state.isMouseDown = false;
+                return open(e);
+            };
 
-                $scope.$apply();
-
-                if (tether)
-                    tether.position();
-            });
-
-            var blurTimer;
-            $element.on(`blur.${$scope.$id}`, () => {
-                // Allow any click on the menu to come through first
-                blurTimer = this.$timeout(() => {
-                    if ($ctrl.isSelecting)
-                        return;
-
-                    $ctrl.isVisible = false;
-                    $scope.$apply();
-                }, 300);
-            });
-
-            $body.on(`click.${$scope.$id}`, e => {
-                if (!$ctrl.isVisible)
+            const onFocus = (e: JQueryEventObject) => {
+                if(state.isMouseDown)
                     return;
+                state.hasFocus = true;
+                return open(e);
+            };
 
-                if (!content || $element.is(e.target) || content.has(e.target).length > 0) {
-                    this.$timeout.cancel(blurTimer);
-                    if (content && content.has(e.target).length > 0) {
-                        $element.focus();
-                    }
+            const onBlur = (e) => {
+                if(state.contentHasFocus)
                     return;
-                }
+                state.hasFocus = false;
+                close(e);
+            };
 
-                $ctrl.isVisible = false;
-                $scope.$apply();
-            });
+            const onBodyClick = (e: JQueryEventObject) => {
+                if(state.isMouseDown || state.hasFocus)
+                    return;
+                close(e);
+            };
+
+            listenOpen();
 
             $scope.$on('$destroy', () => {
-                $body.off(`click.${$scope.$id}`);
+                $body.off(events.click);
                 if (content) content.remove();
             });
         }

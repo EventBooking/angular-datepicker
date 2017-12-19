@@ -40,10 +40,10 @@ function overrideConsole($rootScope) {
 }
 
 function TestController() {
+	for(let i=0; i<20; i++)
+		this['date' + i] = moment().add(i,'d').format('YYYY-MM-DD');
+
 	this.date = '2015-12-01';
-	this.date1 = '2017-03-10';
-	this.date2 = '2017-12-30';
-	this.date3 = '2017-02-10';
 	this.start = '2015-12-01';
 	this.end = '2015-12-04';
 	this.highlighted = ['2015-12-10', '2015-12-12', '2015-12-13'];
@@ -60,11 +60,11 @@ function TestController() {
 	}
 
 	this.onDateSelect = function (date, ctrl) {
-		console.log('onDate', ctrl, date);
+		console.log('onDate', date, ctrl);
 	}
 
-	this.onRangeSelect = function (start, end) {
-		console.log('onRangeSelect', start, end);
+	this.onRangeSelect = function (start, end, ctrl) {
+		console.log('onRangeSelect', start, end, ctrl);
 	}
 
 	this.showTime4 = function () {
@@ -83,6 +83,8 @@ function TestController() {
 	this.onChange5 = function (time) {
 		this.onChange5Result = time;
 	}
+
+	this.initialized = true;
 }
 
 angular.module("demo", ["ngAnimate", "ngDatePicker"])
