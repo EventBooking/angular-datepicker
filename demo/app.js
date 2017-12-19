@@ -41,6 +41,8 @@ function overrideConsole($rootScope) {
 
 function TestController() {
 	this.date = '2015-12-01';
+	this.date1 = '2017-03-10';
+	this.date2 = '2017-12-30';
 	this.date3 = '2017-02-10';
 	this.start = '2015-12-01';
 	this.end = '2015-12-04';
@@ -61,8 +63,8 @@ function TestController() {
 		console.log('onDate', ctrl, date);
 	}
 
-	this.onStartEndSelect = function (start, end) {
-		console.log('onStartEnd', start, end);
+	this.onRangeSelect = function (start, end) {
+		console.log('onRangeSelect', start, end);
 	}
 
 	this.showTime4 = function () {

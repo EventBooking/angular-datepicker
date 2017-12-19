@@ -123,15 +123,16 @@ module DatePickerModule {
             if (!hasChanged)
                 return;
 
+            const start = date;
+            const end = date;
+
             this._date = date;
-            this._start = date;
-            this._end = date;
+            this._start = start;
+            this._end = end;
 
-            this.setDateInternal(this._date);
+            this.setDateInternal(date);
             this.setViewDate(date);
-
-            if (this.initialized && this.onDateSelect)
-                this.onDateSelect({ date: date });
+            this.notifyChanges(date, start, end);
         }
 
         setRange(start: string | Date, end: string | Date) {
@@ -139,12 +140,24 @@ module DatePickerModule {
             if (!hasChanged)
                 return;
 
-            this._date = start;
+            const date = start;
+
+            this._date = date;
             this._start = start;
             this._end = end;
 
-            this.setDateInternal(this._date);
+            this.setDateInternal(date);
             this.setViewRange(start, end);
+            this.notifyChanges(date, start, end);
+        }
+
+        private notifyChanges(date: string | Date, start: string | Date, end: string | Date) {
+            if(!this.initialized)
+                return;
+
+            if (this.onDateSelect)
+                this.onDateSelect({ date: date });
+
             if (this.onRangeSelect)
                 this.onRangeSelect({ start: start, end: end });
         }
@@ -697,14 +710,6 @@ module DatePickerModule {
                 doNotReopen = false;
             };
 
-            $ctrl['dateSelected'] = (date) => {
-                onSelect();
-            };
-
-            $ctrl['rangeSelected'] = (start, end) => {
-                onSelect();
-            };
-
             $element.on(`click.${$scope.$id}`, () => {
                 $ctrl.isVisible = true;
                 $scope.$apply();
@@ -785,14 +790,17 @@ module DatePickerModule {
             });
         }
 
-        createDropDown($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, $ctrl: DatePickerController): angular.IAugmentedJQuery {
-            var singleDateBinding = `date="${this.controllerAs}.date" on-date-select="${this.controllerAs}.dateSelected(date)"`,
-                rangeBinding = `start="${this.controllerAs}.start" end="${this.controllerAs}.end" on-range-select="${this.controllerAs}.rangeSelected(start,end)"`,
+        createDropDown(scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, $ctrl: DatePickerController): angular.IAugmentedJQuery {
+            const $scope = scope.$new();
+            scope['dropdown'] = $scope;
+            const datepicker = this.controllerAs;
+
+            var singleDateBinding = `date="dropdown.date" on-date-select="${datepicker}.setDate(date)"`,
+                rangeBinding = `start="dropdown.start" end="dropdown.end" on-range-select="${datepicker}.setRange(start,end)"`,
                 bindings = $ctrl.isSingleDate ? singleDateBinding : rangeBinding,
-                template = `<div ng-class="{'datepicker-open':${this.controllerAs}.isVisible}"><date-picker min-view="${$attrs['minView']}" is-selecting="${this.controllerAs}.isSelecting" ${bindings}" highlighted="${this.controllerAs}.highlighted" default-date="{{${this.controllerAs}.defaultDate}}"></date-picker></div>`;
+                template = `<div ng-class="{'datepicker-open':${datepicker}.isVisible}"><date-picker min-view="${$attrs['minView']}" is-selecting="${datepicker}.isSelecting" ${bindings}" highlighted="datepicker.highlighted" default-date="{{datepicker.defaultDate}}"></date-picker></div>`;
 
             const content = angular.element(template);
-
             content.addClass("datepicker-dropdown");
 
             if (this.isMobile) {
@@ -809,7 +817,7 @@ module DatePickerModule {
                 });
             }
 
-            this.$compile(content)($scope);
+            this.$compile(content)(scope);
 
             return content;
         }
