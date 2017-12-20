@@ -717,7 +717,6 @@ module DatePickerModule {
                 blur: evt('blur'),
                 mouseup: evt('mouseup')
             };
-            console.log(events);
 
             const state = {
                 isMouseDown: false,
