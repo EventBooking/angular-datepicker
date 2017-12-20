@@ -782,6 +782,7 @@ module DatePickerModule {
                 if (!content) {
                     createContent();
                     content.on(events.mouseup, onContentMouseUp);
+                    content.on(events.mousedown, 'date-picker', onContentBodyMouseDown);
                     content.on(events.mouseup, 'date-picker', onContentBodyMouseUp);
                 }
 
@@ -839,14 +840,18 @@ module DatePickerModule {
                 $scope.$apply();
             }
 
+            const onContentBodyMouseDown = (e: JQueryEventObject) => {
+                state.contentHasFocus = true;
+            }
+
             const onContentBodyMouseUp = (e: JQueryEventObject) => {
+                state.contentHasFocus = true;
                 if($ctrl.isSelecting)
                     return;
 
                 console.info('onContentBodyMouseUp', $ctrl.isSelecting);
-                state.contentHasFocus = true;
 
-                close();
+                //close();
                 this.preventDefault(e);
                 $scope.$apply();
             }
@@ -965,14 +970,14 @@ module DatePickerModule {
             };
 
             $element.on(mouseDown, dayCss, (e: JQueryEventObject) => {
-                console.log('day mousedown');
+                console.info('day mousedown');
+                this.preventDefault(e);
                 const range = new DatePickerMouseRange($ctrl, e);
                 $ctrl.isSelecting = true;
-                this.preventDefault(e);
                 $scope.$apply();
 
                 $body.one(mouseUp, () => {
-                    console.log('day body mouseup');
+                    console.info('day body mouseup');
                     $ctrl.isSelecting = false;
                     onSelected(range);
                 });
@@ -999,22 +1004,21 @@ module DatePickerModule {
             };
 
             $element.on(mouseDown, dayCss, (e: JQueryEventObject) => {
-                console.log('range mousedown');
+                console.info('range mousedown');
                 this.preventDefault(e);
                 const range = new DatePickerMouseRange($ctrl, e);
                 $ctrl.isSelecting = true;
                 $scope.$apply();
 
                 $element.on(mouseOver, dayCss, (e: JQueryEventObject) => {
-                    console.log('range mouseover');
+                    console.info('range mouseover');
                     this.preventDefault(e);
                     range.setEnd(e);
                     onSelecting(range);
                 });
 
                 $body.one(mouseUp, () => {
-                    this.preventDefault(e);
-                    console.log('range body mouseup');
+                    console.info('range body mouseup');
                     $element.off(mouseOver);
                     $ctrl.isSelecting = false;
                     onSelected(range);
