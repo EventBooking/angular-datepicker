@@ -48,12 +48,12 @@ module DatePickerModule {
 
     class DatePickerController {
 
-        static $inject = ['$element', '$attrs', 'datePickerService'];
+        static $inject = ['$element', '$attrs', 'datePickerService', 'isMobile'];
 
-        constructor(private $element: angular.IAugmentedJQuery, private $attrs: angular.IAttributes, private datePickerService: IDatePickerService) {
+        constructor(private $element: angular.IAugmentedJQuery, private $attrs: angular.IAttributes, private datePickerService: IDatePickerService, private isMobile: boolean) {
             DatePickerMouseRange.bootstrap(datePickerService);
 
-            this.isSingleDate = ($attrs['start'] == null && $attrs['end'] == null);
+            this.isSingleDate = this.isMobile || ($attrs['start'] == null && $attrs['end'] == null);
             this.monthNames = datePickerService.getMonths();
             this.daysOfWeek = datePickerService.getDaysOfWeek();
 
@@ -730,12 +730,24 @@ module DatePickerModule {
                 view: $ctrl.view,
                 isOpen: false,
                 setDate: (date) => {
+                    console.info('setDate', date);
                     $ctrl.setDate(date);
                     close();
                 },
                 setRange: (start, end) => {
+                    console.info('setRange', start, end);
                     $ctrl.setRange(start, end);
                     close();
+                }
+            });
+
+            Object.defineProperty(state,'isSelecting', {
+                get: function() {
+                    return $ctrl.isSelected;
+                },
+                set: function(value: boolean) {
+                    console.info('isSelecting', value);
+                    $ctrl.isSelecting = true;
                 }
             });
 
@@ -745,7 +757,7 @@ module DatePickerModule {
                     .on(events.focus, onFocus);
 
                 $element.off(events.blur, onBlur);
-                $body.off(events.mouseup, onBodyClick);
+                $body.off(events.mouseup, onBodyUp);
             }
 
             const listenClose = () => {
@@ -754,7 +766,7 @@ module DatePickerModule {
                     .off(events.focus, onFocus);
 
                 $element.one(events.blur, onBlur);
-                $body.one(events.mouseup, onBodyClick);
+                $body.one(events.mouseup, onBodyUp);
             }
 
             const open = (e: JQueryEventObject): boolean => {
@@ -763,10 +775,14 @@ module DatePickerModule {
 
                 state.view = $ctrl.view;
                 state.isOpen = true;
+                state.contentHasFocus = false;
                 $ctrl.isVisible = true;
+                $ctrl.isSelecting = false;
 
                 if (!content) {
                     createContent();
+                    content.on(events.mouseup, onContentMouseUp);
+                    content.on(events.mouseup, 'date-picker', onContentBodyMouseUp);
                 }
 
                 $scope.$apply();
@@ -793,14 +809,6 @@ module DatePickerModule {
                 $body.append(content);
                 $scope.$apply();
 
-                content.on(events.mousedown, (e) => {
-                    state.contentHasFocus = true;
-
-                    $body.one(events.mouseup, (e) => {
-                        state.contentHasFocus = false;
-                    });
-                });
-
                 if (this.isMobile)
                     return;
 
@@ -821,15 +829,39 @@ module DatePickerModule {
                 });
             }
 
+            const onContentMouseUp = (e: JQueryEventObject) => {
+                if($ctrl.isSelecting)
+                    return;
+
+                console.info('onContentMouseUp', $ctrl.isSelecting);
+                close();
+                this.preventDefault(e);
+                $scope.$apply();
+            }
+
+            const onContentBodyMouseUp = (e: JQueryEventObject) => {
+                if($ctrl.isSelecting)
+                    return;
+
+                console.info('onContentBodyMouseUp', $ctrl.isSelecting);
+                state.contentHasFocus = true;
+
+                close();
+                this.preventDefault(e);
+                $scope.$apply();
+            }
+
             const onMouseDown = (e: JQueryEventObject) => {
                 if (state.hasFocus)
                     return;
 
+                console.info('onMouseDown');
                 state.isMouseDown = true;
                 $element.one(events.mouseup, onMouseUp);
             };
 
             const onMouseUp = (e: JQueryEventObject) => {
+                console.info('onMouseUp');
                 state.isMouseDown = false;
                 this.preventDefault(e);
                 return open(e);
@@ -838,6 +870,7 @@ module DatePickerModule {
             const onFocus = (e: JQueryEventObject) => {
                 if (state.isMouseDown)
                     return;
+
                 state.hasFocus = true;
                 this.preventDefault(e);
                 return open(e);
@@ -846,15 +879,17 @@ module DatePickerModule {
             const onBlur = (e) => {
                 if (state.contentHasFocus)
                     return;
+
                 state.hasFocus = false;
                 close();
                 $scope.$apply();
             };
 
-            const onBodyClick = (e: JQueryEventObject) => {
-                if (state.isMouseDown || state.hasFocus || state.contentHasFocus)
+            const onBodyUp = (e: JQueryEventObject) => {
+                if (state.isMouseDown || state.hasFocus || state.contentHasFocus || $ctrl.isSelecting) {
                     return;
-
+                }
+                console.info('onBodyUp');
                 $element.focus();
                 close();
                 $scope.$apply();
@@ -875,7 +910,7 @@ module DatePickerModule {
             var singleDateBinding = `date="dropdown.date" on-date-select="dropdown.setDate(date)"`,
                 rangeBinding = `start="dropdown.start" end="dropdown.end" on-range-select="dropdown.setRange(start,end)"`,
                 bindings = $ctrl.isSingleDate ? singleDateBinding : rangeBinding,
-                template = `<div ng-class="{'datepicker-open':dropdown.isOpen}"><date-picker min-view="${$attrs['minView']}" is-selecting="datepicker.isSelecting" ${bindings}" highlighted="datepicker.highlighted" default-date="{{datepicker.defaultDate}}"></date-picker></div>`;
+                template = `<div ng-class="{'datepicker-open':dropdown.isOpen}"><date-picker min-view="${$attrs['minView']}" is-selecting="dropdown.isSelecting" ${bindings}" highlighted="datepicker.highlighted" default-date="{{datepicker.defaultDate}}"></date-picker></div>`;
 
             const content = angular.element(template);
             content.addClass("datepicker-dropdown");
@@ -920,8 +955,8 @@ module DatePickerModule {
         setupDaySelect($scope: angular.IScope, $element: angular.IAugmentedJQuery, $ctrl: DatePickerController) {
             const dayCss = '.datePickerDays-day',
                 $body: any = angular.element('body'),
-                mouseDown = this.evt('mousedown', $scope),
-                mouseUp = this.evt('mouseup', $scope);
+                mouseDown = this.evt('mousedown touchstart', $scope),
+                mouseUp = this.evt('mouseup touchend', $scope);
 
             const onSelected = (range: DatePickerMouseRange) => {
                 var days = range.getDays();
@@ -930,10 +965,14 @@ module DatePickerModule {
             };
 
             $element.on(mouseDown, dayCss, (e: JQueryEventObject) => {
+                console.log('day mousedown');
                 const range = new DatePickerMouseRange($ctrl, e);
                 $ctrl.isSelecting = true;
+                this.preventDefault(e);
+                $scope.$apply();
 
                 $body.one(mouseUp, () => {
+                    console.log('day body mouseup');
                     $ctrl.isSelecting = false;
                     onSelected(range);
                 });
@@ -942,8 +981,8 @@ module DatePickerModule {
 
         setupRangeSelect($scope, $element, $ctrl: DatePickerController) {
             const $body: any = angular.element('body'),
-                mouseDown = this.evt('mousedown', $scope),
-                mouseOver = this.evt('mouseover', $scope),
+                mouseDown = this.evt('mousedown touchstart', $scope),
+                mouseOver = this.evt('mouseover touchend', $scope),
                 mouseUp = this.evt('mouseup', $scope),
                 dayCss = '.datePickerDays-day';
 
@@ -960,15 +999,22 @@ module DatePickerModule {
             };
 
             $element.on(mouseDown, dayCss, (e: JQueryEventObject) => {
+                console.log('range mousedown');
+                this.preventDefault(e);
                 const range = new DatePickerMouseRange($ctrl, e);
                 $ctrl.isSelecting = true;
+                $scope.$apply();
 
                 $element.on(mouseOver, dayCss, (e: JQueryEventObject) => {
+                    console.log('range mouseover');
+                    this.preventDefault(e);
                     range.setEnd(e);
                     onSelecting(range);
                 });
 
                 $body.one(mouseUp, () => {
+                    this.preventDefault(e);
+                    console.log('range body mouseup');
                     $element.off(mouseOver);
                     $ctrl.isSelecting = false;
                     onSelected(range);
