@@ -882,13 +882,13 @@ module DatePickerModule {
             };
 
             const onClose = () => {
+                $scope.$apply();
                 listenOpen();
             };
 
             const createContent = () => {
                 content = this.createDropDown($scope, $element, $attrs, $ctrl, state);
                 $body.append(content);
-                $scope.$apply();
 
                 if (this.isMobile)
                     return;
@@ -950,7 +950,6 @@ module DatePickerModule {
                 //console.info('onElementFocus', e);
                 enableElementBlur();
                 state.open();
-                $scope.$apply();
             };
 
             const onElementBlur = (e) => {
@@ -958,7 +957,6 @@ module DatePickerModule {
                     return;
                 //console.info('onElementBlur');
                 state.close();
-                $scope.$apply();
             };
 
             const onBodyUp = (e: JQueryEventObject) => {
@@ -968,7 +966,6 @@ module DatePickerModule {
                     return;
                 //console.info('onBodyUp', e);
                 state.close();
-                $scope.$apply();
             };
 
 
