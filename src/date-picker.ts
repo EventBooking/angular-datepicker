@@ -882,7 +882,6 @@ module DatePickerModule {
             };
 
             const onClose = () => {
-                $scope.$apply();
                 listenOpen();
             };
 
@@ -957,6 +956,7 @@ module DatePickerModule {
                     return;
                 //console.info('onElementBlur');
                 state.close();
+                $scope.$apply();
             };
 
             const onBodyUp = (e: JQueryEventObject) => {
@@ -966,6 +966,7 @@ module DatePickerModule {
                     return;
                 //console.info('onBodyUp', e);
                 state.close();
+                $scope.$apply();
             };
 
 
@@ -1007,7 +1008,7 @@ module DatePickerModule {
 
             this.$compile(content)(scope);
 
-            localScope['childDatepicker'] = content.find(".datepicker").scope()['datepicker'];
+            localScope['childDatepicker'] = content.find(".datePicker").scope()['datepicker'];
 
             return content;
         }
