@@ -36,20 +36,28 @@ function overrideConsole($rootScope) {
 		_log(...arguments);
 	};
 
-	console.log = log;	
+	console.log = log;
 }
 
 function TestController() {
-	for(let i=0; i<20; i++)
-		this['date' + i] = moment().add(i,'d').format('YYYY-MM-DD');
+	for (let i = 0; i < 20; i++)
+		this['date' + i] = moment().add(i, 'd').format('YYYY-MM-DD');
+
+	this.highlighted = [];
+	for (let i = 0; i < 20; i++)
+		this.highlighted.push(moment().add(i+20, 'd').format('YYYY-MM-DD'));
 
 	this.date = '2015-12-01';
 	this.start = '2015-12-01';
 	this.end = '2015-12-04';
-	this.highlighted = ['2015-12-10', '2015-12-12', '2015-12-13'];
+
 	this.time1 = '14:05:00';
 	this.time2 = '14:05:00';
 	this.time3 = '14:05:00';
+
+	this.getMonthYear = function (date) {
+		return moment(date).format("MMMM YYYY");
+	}
 
 	this.setDate = function () {
 		this.date = '2015-12-01';

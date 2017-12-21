@@ -56,8 +56,27 @@ module DatePickerModule {
             this.isSingleDate = this.isMobile || ($attrs['start'] == null && $attrs['end'] == null);
             this.monthNames = datePickerService.getMonths();
             this.daysOfWeek = datePickerService.getDaysOfWeek();
+        }
 
-            switch ($attrs['minView']) {
+        $onInit() {
+            if (this.defaultDate == "")
+                this.defaultDate = null;
+            this.resetView();
+        }
+
+        $postLink() {
+            if (this.isSingleDate) {
+                this.setViewDate(this.date || this.defaultDate);
+            } else {
+                const start = this.start || this.defaultDate;
+                this.setViewRange(start, this.end || start);
+            }
+
+            this.initialized = true;
+        }
+
+        initView() {
+            switch (this.$attrs['minView']) {
                 case 'years':
                     this.view = DatePickerView.Years;
                     this.minView = DatePickerView.Years;
@@ -73,24 +92,9 @@ module DatePickerModule {
             }
         }
 
-        $onInit() {
-            if (this.defaultDate == "")
-                this.defaultDate = null;
-
-            const dateInternal = (this.isSingleDate ? this.date : this.start) || this.defaultDate;
-
-            this.setDateInternal(dateInternal);
-            this.calculate(this._dateInternal);
-        }
-
-        $postLink() {
-            if (this.isSingleDate) {
-                this.setViewDate(this.date || this.defaultDate);
-            } else {
-                const start = this.start || this.defaultDate;
-                this.setViewRange(start, this.end || start);
-            }
-            this.initialized = true;
+        resetView() {
+            this.initView();
+            this.initDateInternal();
         }
 
         // Single Date
@@ -175,6 +179,12 @@ module DatePickerModule {
 
         get dateInternal(): moment.Moment {
             return this._dateInternal;
+        }
+
+        public initDateInternal() {
+            const dateInternal = (this.isSingleDate ? this.date : this.start) || this.defaultDate;
+            this.setDateInternal(dateInternal);
+            this.calculate(this._dateInternal);
         }
 
         private setDateInternal(value: string | Date | moment.Moment) {
@@ -398,6 +408,82 @@ module DatePickerModule {
     }
 
     Angular.module("ngDatePicker").controller('datePicker', DatePickerController);
+
+    interface IPopoverState {
+        isOpen: boolean;
+        setDate: (date: string) => void;
+        setRange: (start: string, end: string) => void;
+        isSelecting: boolean;
+        isVisible: boolean;
+        allowClose: boolean;
+    }
+
+    class PopoverState implements IPopoverState {
+        constructor(private $ctrl: DatePickerController) {
+            this._isOpen = false;
+            this._isSelecting = false;
+            this.allowClose = true;
+        }
+
+        _onChange: (state: PopoverState, action: string) => void;
+        onChange(fn: (state: PopoverState, action: string) => void) {
+            this._onChange = fn;
+        }
+
+        private notify(action: string) {
+            if (!this._onChange)
+                return;
+            this._onChange(this, action);
+        }
+
+        setDate(date: string) {
+            this.$ctrl.setDate(date);
+            this.close();
+        }
+
+        setRange(start: string, end: string) {
+            this.$ctrl.setRange(start, end);
+            this.close();
+        }
+
+        open() {
+            this._isOpen = true;
+            this.notify('open');
+        }
+
+        close() {
+            if (!this.allowClose)
+                return;
+            this._isOpen = false;
+            this['childDatepicker'].resetView();
+            this.notify('close');
+        }
+
+        private _isOpen: boolean;
+        get isOpen(): boolean {
+            return this._isOpen;
+        }
+
+        get isVisible(): boolean {
+            return this._isOpen;
+        }
+        set isVisible(value: boolean) {
+            if (value) this.open();
+            else this.close();
+        }
+
+        private _isSelecting: boolean;
+        get isSelecting(): boolean {
+            return this._isSelecting;
+        }
+        set isSelecting(value: boolean) {
+            this._isSelecting = value;
+            if (!value && this.isOpen)
+                this.close();
+        }
+
+        allowClose: boolean;
+    }
 
     class DatePickerDirective {
         static $inject = ['$injector', '$compile', '$templateCache', '$timeout', '$window', 'datePickerService', 'isMobile', 'isIOS'];
@@ -710,78 +796,49 @@ module DatePickerModule {
         }
 
         popover($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, $ctrl: DatePickerController) {
-            var content,
-                tether,
-                $body: any = angular.element('body');
+            var content, tether, $body: any = angular.element('body');
 
             const evt = (names: string) => this.evt(names, $scope);
             const events = {
-                mousedown: evt('mousedown touchstart'),
+                mousedown: evt('mousedown'),
                 focus: evt('focus'),
                 click: evt('click'),
                 blur: evt('blur'),
-                mouseup: evt('mouseup touchend')
+                mouseup: evt('mouseup')
             };
 
-            const state = angular.extend($scope.$new(), {
-                isMouseDown: false,
-                hasFocus: false,
-                contentHasFocus: false,
-                view: $ctrl.view,
-                isOpen: false,
-                setDate: (date) => {
-                    console.info('setDate', date);
-                    $ctrl.setDate(date);
-                    close();
-                },
-                setRange: (start, end) => {
-                    console.info('setRange', start, end);
-                    $ctrl.setRange(start, end);
-                    close();
-                }
-            });
-
-            Object.defineProperty(state,'isSelecting', {
-                get: function() {
-                    return $ctrl.isSelected;
-                },
-                set: function(value: boolean) {
-                    console.info('isSelecting', value);
-                    $ctrl.isSelecting = true;
+            const state = new PopoverState($ctrl);
+            state.onChange((newState, action) => {
+                //console.info('onChange', action, newState);
+                switch (action) {
+                    case 'close':
+                        onClose();
+                        break;
+                    case 'open':
+                        onOpen();
+                        break;
                 }
             });
 
             const listenOpen = () => {
                 $element
-                    .on(events.mousedown, onMouseDown)
-                    .on(events.focus, onFocus);
+                    .on(events.mousedown, onElementMouseDown)
+                    .on(events.mouseup, onElementMouseUp);
 
-                $element.off(events.blur, onBlur);
-                $body.off(events.mouseup, onBodyUp);
+                $body.off(events.mouseup);
             }
 
             const listenClose = () => {
                 $element
-                    .off(events.mousedown, onMouseDown)
-                    .off(events.focus, onFocus);
+                    .off(events.mousedown)
+                    .off(events.mouseup);
 
-                $element.one(events.blur, onBlur);
                 $body.one(events.mouseup, onBodyUp);
             }
 
-            const open = (e: JQueryEventObject): boolean => {
-                if (state.isOpen)
-                    return;
-
-                state.view = $ctrl.view;
-                state.isOpen = true;
-                state.contentHasFocus = false;
-                $ctrl.isVisible = true;
-                $ctrl.isSelecting = false;
-
+            const onOpen = () => {
                 if (!content) {
                     createContent();
-                    content.on(events.mouseup, onContentMouseUp);
                     content.on(events.mousedown, 'date-picker', onContentBodyMouseDown);
                     content.on(events.mouseup, 'date-picker', onContentBodyMouseUp);
                 }
@@ -795,13 +852,7 @@ module DatePickerModule {
                 listenClose();
             };
 
-            var blurTimer;
-            const close = () => {
-                if (!state.isOpen)
-                    return;
-
-                state.isOpen = false;
-                $ctrl.isVisible = false;
+            const onClose = () => {
                 listenOpen();
             };
 
@@ -830,76 +881,70 @@ module DatePickerModule {
                 });
             }
 
-            const onContentMouseUp = (e: JQueryEventObject) => {
-                if($ctrl.isSelecting)
-                    return;
+            const preventElementBlur = () => {
+                state.allowClose = false;
+            }
 
-                console.info('onContentMouseUp', $ctrl.isSelecting);
-                close();
-                this.preventDefault(e);
-                $scope.$apply();
+            const enableElementBlur = () => {
+                state.allowClose = true;
             }
 
             const onContentBodyMouseDown = (e: JQueryEventObject) => {
-                state.contentHasFocus = true;
-            }
+                //console.info('onContentBodyMouseDown');
+                preventElementBlur();
+            };
 
             const onContentBodyMouseUp = (e: JQueryEventObject) => {
-                state.contentHasFocus = true;
-                if($ctrl.isSelecting)
+                if (state.isSelecting)
                     return;
 
-                console.info('onContentBodyMouseUp', $ctrl.isSelecting);
+                //console.info('onContentBodyMouseUp');
+                const preventBodyMouseUp = () => this.preventDefault(e);
+                preventBodyMouseUp();
 
-                //close();
-                this.preventDefault(e);
-                $scope.$apply();
+                $element.focus();
             }
 
-            const onMouseDown = (e: JQueryEventObject) => {
-                if (state.hasFocus)
-                    return;
-
-                console.info('onMouseDown');
-                state.isMouseDown = true;
-                $element.one(events.mouseup, onMouseUp);
+            const onElementMouseDown = (e: JQueryEventObject) => {
+                //console.info('onElementMouseDown');
+                const preventElementFocus = () => this.preventDefault(e);
+                preventElementFocus();
             };
 
-            const onMouseUp = (e: JQueryEventObject) => {
-                console.info('onMouseUp');
-                state.isMouseDown = false;
+            const onElementMouseUp = (e: JQueryEventObject) => {
+                //console.info('onElementMouseUp');
                 this.preventDefault(e);
-                return open(e);
+                $element.focus(); // now manually focus
             };
 
-            const onFocus = (e: JQueryEventObject) => {
-                if (state.isMouseDown)
-                    return;
-
-                state.hasFocus = true;
-                this.preventDefault(e);
-                return open(e);
+            const onElementFocus = (e: JQueryEventObject) => {
+                //console.info('onElementFocus', e);
+                enableElementBlur();
+                state.open();
+                $scope.$apply();
             };
 
-            const onBlur = (e) => {
-                if (state.contentHasFocus)
+            const onElementBlur = (e) => {
+                if (!state.allowClose)
                     return;
-
-                state.hasFocus = false;
-                close();
+                //console.info('onElementBlur');
+                state.close();
                 $scope.$apply();
             };
 
             const onBodyUp = (e: JQueryEventObject) => {
-                if (state.isMouseDown || state.hasFocus || state.contentHasFocus || $ctrl.isSelecting) {
+                enableElementBlur();
+
+                if (state.isSelecting || !state.isOpen || $element.is(e.target))
                     return;
-                }
-                console.info('onBodyUp');
-                $element.focus();
-                close();
+                //console.info('onBodyUp', e);
+                state.close();
                 $scope.$apply();
             };
 
+            
+            $element.on(events.focus, onElementFocus);
+            $element.on(events.blur, onElementBlur);
             listenOpen();
 
             $scope.$on('$destroy', () => {
@@ -908,12 +953,12 @@ module DatePickerModule {
             });
         }
 
-        createDropDown(scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, $ctrl: DatePickerController, localScope: angular.IScope): angular.IAugmentedJQuery {
+        createDropDown(scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, $ctrl: DatePickerController, localScope: PopoverState): angular.IAugmentedJQuery {
             scope['dropdown'] = localScope;
             const datepicker = this.controllerAs;
 
-            var singleDateBinding = `date="dropdown.date" on-date-select="dropdown.setDate(date)"`,
-                rangeBinding = `start="dropdown.start" end="dropdown.end" on-range-select="dropdown.setRange(start,end)"`,
+            var singleDateBinding = `date="datepicker.date" on-date-select="dropdown.setDate(date)"`,
+                rangeBinding = `start="datepicker.start" end="datepicker.end" on-range-select="dropdown.setRange(start,end)"`,
                 bindings = $ctrl.isSingleDate ? singleDateBinding : rangeBinding,
                 template = `<div ng-class="{'datepicker-open':dropdown.isOpen}"><date-picker min-view="${$attrs['minView']}" is-selecting="dropdown.isSelecting" ${bindings}" highlighted="datepicker.highlighted" default-date="{{datepicker.defaultDate}}"></date-picker></div>`;
 
@@ -935,6 +980,8 @@ module DatePickerModule {
             }
 
             this.$compile(content)(scope);
+
+            localScope['childDatepicker'] = content.find(".datepicker").scope()['datepicker'];
 
             return content;
         }
@@ -970,14 +1017,14 @@ module DatePickerModule {
             };
 
             $element.on(mouseDown, dayCss, (e: JQueryEventObject) => {
-                console.info('day mousedown');
+                //console.info('day mousedown');
                 this.preventDefault(e);
                 const range = new DatePickerMouseRange($ctrl, e);
                 $ctrl.isSelecting = true;
                 $scope.$apply();
 
                 $body.one(mouseUp, () => {
-                    console.info('day body mouseup');
+                    //console.info('day body mouseup');
                     $ctrl.isSelecting = false;
                     onSelected(range);
                 });
@@ -1004,21 +1051,21 @@ module DatePickerModule {
             };
 
             $element.on(mouseDown, dayCss, (e: JQueryEventObject) => {
-                console.info('range mousedown');
+                //console.info('range mousedown');
                 this.preventDefault(e);
                 const range = new DatePickerMouseRange($ctrl, e);
                 $ctrl.isSelecting = true;
                 $scope.$apply();
 
                 $element.on(mouseOver, dayCss, (e: JQueryEventObject) => {
-                    console.info('range mouseover');
+                    //console.info('range mouseover');
                     this.preventDefault(e);
                     range.setEnd(e);
                     onSelecting(range);
                 });
 
                 $body.one(mouseUp, () => {
-                    console.info('range body mouseup');
+                    //console.info('range body mouseup');
                     $element.off(mouseOver);
                     $ctrl.isSelecting = false;
                     onSelected(range);
