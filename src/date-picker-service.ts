@@ -61,27 +61,34 @@ module DatePickerModule {
     // IDatePickerDay
     export interface IDatePickerDay {
         date: number;
-        value: any;
+        value: moment.Moment;
+        isoDate: string;
         isToday: boolean;
         isNotInMonth: boolean;
         isSelecting: boolean;
+        isSelected: boolean;
         isBefore(day: IDatePickerDay): boolean;
         isSame(day: IDatePickerDay): boolean;
+        isHighlighted: boolean;
     }
 
     class DatePickerDay implements IDatePickerDay {
-        constructor(fromDate: any, dayOfWeek: any) {
-            this.value = moment(dayOfWeek);
+        constructor(fromDate: any, dayOfWeek: moment.Moment, today: moment.Moment) {
+            this.value = dayOfWeek.clone();
+            this.isoDate = this.value.format("YYYY-DD-MM");
             this.date = this.value.date();
-            this.isToday = dayOfWeek.isSame(moment(), 'day');
+            this.isToday = dayOfWeek.isSame(today, 'day');
             this.isNotInMonth = !this.value.isSame(fromDate, 'month');
         }
 
         date: number;
-        value: any;
+        value: moment.Moment;
+        isoDate: string;
         isToday: boolean;
         isNotInMonth: boolean;
         isSelecting: boolean;
+        isSelected: boolean;
+        isHighlighted: boolean;
 
         isBefore(day: IDatePickerDay): boolean {
             var isBefore = this.value.isBefore(day.value, 'day');
@@ -98,8 +105,8 @@ module DatePickerModule {
     export interface IDatePickerService {
         getMonths(): IDatePickerMonth[];
         getDaysOfWeek(): string[];
-        getYears(fromDate): IDatePickerYear[];
-        getWeek(fromDate, startOfWeek): IDatePickerDay[];
+        getYears(fromDate: moment.Moment): IDatePickerYear[];
+        getWeek(fromDate: moment.Moment, startOfWeek: moment.Moment, today: moment.Moment): IDatePickerDay[];
         getRangeDays(start: IDatePickerDay, end: IDatePickerDay, weeks: IDatePickerDay[][]): IDatePickerDay[];
         deselectAll(weeks: IDatePickerDay[][]);
         selectDays(days: IDatePickerDay[]);
@@ -128,12 +135,11 @@ module DatePickerModule {
             return years;
         }
 
-        getWeek(fromDate, startOfWeek): IDatePickerDay[] {
-            var endOfWeek = moment(startOfWeek).endOf('week');
-
+        getWeek(fromDate: moment.Moment, startOfWeek: moment.Moment, today: moment.Moment): IDatePickerDay[] {
+            var endOfWeek = startOfWeek.clone().endOf('week');
             var days = new Array<IDatePickerDay>();
-            for (var dayOfWeek = moment(startOfWeek); dayOfWeek.isBefore(endOfWeek); dayOfWeek.add(1, 'days')) {
-                days.push(new DatePickerDay(fromDate, dayOfWeek));
+            for (var dayOfWeek = startOfWeek.clone(); dayOfWeek.isBefore(endOfWeek); dayOfWeek.add(1, 'days')) {
+                days.push(new DatePickerDay(fromDate, dayOfWeek, today));
             }
 
             return days;

@@ -48,9 +48,9 @@ module DatePickerModule {
 
     class DatePickerController {
 
-        static $inject = ['$element', '$attrs', 'datePickerService', 'isMobile'];
+        static $inject = ['$scope', '$element', '$attrs', 'datePickerService', 'isMobile'];
 
-        constructor(private $element: angular.IAugmentedJQuery, private $attrs: angular.IAttributes, private datePickerService: IDatePickerService, private isMobile: boolean) {
+        constructor(private $scope: angular.IScope, private $element: angular.IAugmentedJQuery, private $attrs: angular.IAttributes, private datePickerService: IDatePickerService, private isMobile: boolean) {
             DatePickerMouseRange.bootstrap(datePickerService);
 
             this.isSingleDate = this.isMobile || ($attrs['start'] == null && $attrs['end'] == null);
@@ -62,6 +62,10 @@ module DatePickerModule {
             if (this.defaultDate == "")
                 this.defaultDate = null;
             this.resetView();
+
+            this.$scope.$watchCollection('highlighted', (highlighted: string[]) => {
+                this.setHighlights(highlighted);
+            });
         }
 
         $postLink() {
@@ -157,7 +161,7 @@ module DatePickerModule {
 
             this.setDateInternal(date);
             this.setViewRange(start, end);
-
+            
             if (!notify)
                 return;
 
@@ -187,24 +191,34 @@ module DatePickerModule {
             this.calculate(this._dateInternal);
         }
 
-        private setDateInternal(value: string | Date | moment.Moment) {
-            this._dateInternal = (value != null) ? moment(value) : moment();
+        private momentFromValue(value: string | Date | moment.Moment) {
+            return (value != null) ? moment(value) : moment();
+        }
 
-            if (this.initialized)
-                this.calculate(this._dateInternal);
+        private setDateInternal(value: string | Date | moment.Moment) {
+            this._dateInternal = this.momentFromValue(value);
+
+            if (!this.initialized)
+                return;
+
+            this.calculate(this._dateInternal);
         }
 
         private calculate(fromDate: moment.Moment) {
             const start = fromDate.clone().startOf('month').startOf('week'),
                 end = fromDate.clone().endOf('month').endOf('week');
 
+            const now = moment();
+            const today = moment(now.format('YYYY-MM-DD'), 'YYYY-MM-DD');
             this.weeks = new Array<IDatePickerDay[]>();
             for (let day = start; day.isBefore(end); day = day.clone().add(1, 'week')) {
-                const week = this.datePickerService.getWeek(fromDate, day);
+                const week = this.datePickerService.getWeek(fromDate, day, today);
                 this.weeks.push(week);
             }
 
             this.years = this.datePickerService.getYears(fromDate);
+            this.setHighlights(this.highlighted);
+            this.setSelected(this.start, this.end);
         }
 
         setViewDate(date) {
@@ -255,22 +269,37 @@ module DatePickerModule {
             this.view = DatePickerView.Years;
         }
 
-        isSelected(day: IDatePickerDay) {
-            if (this.isSingleDate)
-                return moment(this._date).isSame(day.value, 'day');
-
-            return day.value.isBetween(this._start, this._end, 'day') ||
-                day.value.isSame(this._start, 'day') ||
-                day.value.isSame(this._end, 'day');
+        setSelected(start: string | Date, end: string | Date) {
+            const rangeStart = this.momentFromValue(start);
+            const rangeEnd = this.momentFromValue(end);
+            this.weeks.forEach(week => {
+                week.forEach(day => {
+                    day.isSelected = this.isSelected(rangeStart, rangeEnd, day);
+                });
+            });
         }
 
-        isHighlighted(day: IDatePickerDay) {
-            if (this.highlighted == null)
-                return false;
+        isSelected(start: moment.Moment, end: moment.Moment, day: IDatePickerDay) {
+            return day.value.isBetween(start, end, 'day') ||
+                day.value.isSame(start, 'day') ||
+                day.value.isSame(end, 'day');
+        }
 
-            for (let i = 0; i < this.highlighted.length; i++) {
-                const value = this.highlighted[i];
-                if (moment(value).isSame(day.value, 'day'))
+        setHighlights(highlights: string[]) {
+            this.weeks.forEach(week => {
+                week.forEach(day => day.isHighlighted = this.isHighlighted(highlights, day))
+            });
+        }
+
+        isHighlighted(highlights: string[], day: IDatePickerDay) {
+            if (highlights == null)
+                highlights = [];
+
+            const isoHighlights = highlights.map(value => moment(value).format('YYYY-DD-MM'));
+
+            for (let i = 0; i < isoHighlights.length; i++) {
+                const isoDate = isoHighlights[i];
+                if (isoDate === day.isoDate)
                     return true;
             }
             return false;
@@ -942,7 +971,7 @@ module DatePickerModule {
                 $scope.$apply();
             };
 
-            
+
             $element.on(events.focus, onElementFocus);
             $element.on(events.blur, onElementBlur);
             listenOpen();

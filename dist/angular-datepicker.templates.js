@@ -28,9 +28,9 @@ module.run(['$templateCache', function($templateCache) {
     '                ng-class="{ \n' +
     '                    \'is-today\': day.isToday, \n' +
     '                    \'not-in-month\': day.isNotInMonth, \n' +
-    '                    \'is-selected\': datepicker.isSelected(day),\n' +
+    '                    \'is-selected\': day.isSelected,\n' +
     '                    \'is-selecting\': day.isSelecting,\n' +
-    '                    \'is-highlighted\': datepicker.isHighlighted(day)\n' +
+    '                    \'is-highlighted\': day.isHighlighted\n' +
     '                }">\n' +
     '                {{day.date}}\n' +
     '            </li>\n' +

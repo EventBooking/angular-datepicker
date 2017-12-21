@@ -20,9 +20,9 @@
                 ng-class="{ 
                     'is-today': day.isToday, 
                     'not-in-month': day.isNotInMonth, 
-                    'is-selected': datepicker.isSelected(day),
+                    'is-selected': day.isSelected,
                     'is-selecting': day.isSelecting,
-                    'is-highlighted': datepicker.isHighlighted(day)
+                    'is-highlighted': day.isHighlighted
                 }">
                 {{day.date}}
             </li>

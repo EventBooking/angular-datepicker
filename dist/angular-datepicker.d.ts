@@ -18,18 +18,21 @@ declare module DatePickerModule {
     }
     interface IDatePickerDay {
         date: number;
-        value: any;
+        value: moment.Moment;
+        isoDate: string;
         isToday: boolean;
         isNotInMonth: boolean;
         isSelecting: boolean;
+        isSelected: boolean;
         isBefore(day: IDatePickerDay): boolean;
         isSame(day: IDatePickerDay): boolean;
+        isHighlighted: boolean;
     }
     interface IDatePickerService {
         getMonths(): IDatePickerMonth[];
         getDaysOfWeek(): string[];
-        getYears(fromDate: any): IDatePickerYear[];
-        getWeek(fromDate: any, startOfWeek: any): IDatePickerDay[];
+        getYears(fromDate: moment.Moment): IDatePickerYear[];
+        getWeek(fromDate: moment.Moment, startOfWeek: moment.Moment, today: moment.Moment): IDatePickerDay[];
         getRangeDays(start: IDatePickerDay, end: IDatePickerDay, weeks: IDatePickerDay[][]): IDatePickerDay[];
         deselectAll(weeks: IDatePickerDay[][]): any;
         selectDays(days: IDatePickerDay[]): any;
