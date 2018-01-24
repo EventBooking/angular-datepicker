@@ -7,18 +7,20 @@
         "inlineSourceMap": true,
         "inlineSources": true,
         "target": "es5",
-        "out": "dist/angular-datepicker.js"
+        "out": "dist/angular-datepicker.js",
+        "types": [
+            "angular",
+            "jquery",
+            "angular-typescript-module"
+        ]
     },
     "files": [
-        "../typings/main.d.ts",
+        "moment.d.ts",
         "app.ts",
         "mobile.ts",
         "date-picker.ts",
         "date-picker-service.ts",
         "time-picker.ts",
         "time-picker-service.ts"
-    ],
-    "ignore": [
-        "../typings"
     ]
 }

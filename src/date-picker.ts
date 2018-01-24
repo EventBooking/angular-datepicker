@@ -1034,13 +1034,13 @@ module DatePickerModule {
             return content;
         }
 
-        preventDefault(e: JQueryEventObject): boolean {
+        preventDefault(e: JQuery.Event): boolean {
             e.preventDefault();
             e.stopPropagation();
             return false;
         }
 
-        isEscape(e: JQueryEventObject): boolean {
+        isEscape(e: JQuery.Event): boolean {
             return e.which === 27;
         }
 

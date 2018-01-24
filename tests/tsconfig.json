@@ -5,6 +5,21 @@
     "removeComments": false,
     "inlineSourceMap": true,
     "inlineSources": true,
-    "target": "es5"
-  }
+    "target": "es5",
+    "outDir": "./output",
+    "types": [
+      "angular",
+      "jquery",
+      "angular-typescript-module",
+      "mocha",
+      "chai",
+      "sinon",
+      "angular-mocks"
+    ]
+  },
+  "include": [
+    "../src/moment.d.ts",
+    "../dist/angular-datepicker.d.ts",
+    "**/*.ts"
+  ]
 }

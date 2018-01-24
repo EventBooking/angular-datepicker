@@ -1,6 +1,3 @@
-/// <reference path="..\typings\main.d.ts" />
-/// <reference path="..\dist\angular-datepicker.d.ts" />
-
 describe('Date picker service', function() {
     
         beforeEach(angular.mock.module('ngDatePicker'));

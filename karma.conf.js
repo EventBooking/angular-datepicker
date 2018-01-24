@@ -35,7 +35,7 @@ module.exports = function(config) {
             'dist/angular-datepicker.js',
             'dist/angular-datepicker.templates.js',
             'demo/app.js',
-			'tests/**/*.js'
+			'tests/output/**/*.js'
 		],
 
 
