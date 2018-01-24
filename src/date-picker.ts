@@ -62,10 +62,6 @@ module DatePickerModule {
             if (this.defaultDate == "")
                 this.defaultDate = null;
             this.resetView();
-
-            this.$scope.$watchCollection('highlighted', (highlighted: string[]) => {
-                this.setHighlights(highlighted);
-            });
         }
 
         $postLink() {
@@ -270,16 +266,16 @@ module DatePickerModule {
         }
 
         setSelected(start: string | Date, end: string | Date) {
-            const rangeStart = this.momentFromValue(start);
-            const rangeEnd = this.momentFromValue(end);
             this.weeks.forEach(week => {
                 week.forEach(day => {
-                    day.isSelected = this.isSelected(rangeStart, rangeEnd, day);
+                    day.isSelected = this.isSelected(start, end, day);
                 });
             });
         }
 
-        isSelected(start: moment.Moment, end: moment.Moment, day: IDatePickerDay) {
+        isSelected(start: string | Date, end: string | Date, day: IDatePickerDay) {
+            if (start == null || end == null)
+                return false;
             return day.value.isBetween(start, end, 'day') ||
                 day.value.isSame(start, 'day') ||
                 day.value.isSame(end, 'day');
@@ -1018,6 +1014,7 @@ module DatePickerModule {
                     left: position.left
                 });
             }
+
 
             this.$compile(content)(scope);
 
