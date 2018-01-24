@@ -18,6 +18,10 @@
 					<input type="text" date-picker date="vm.date0" ng-model="vm.dateModel0" on-range-select="vm.onRangeSelect(start,end, 'date0')" highlighted="vm.highlighted" />
 				</div>
 
+				<h4>Add date</h4>
+ 				<a href="#" date-picker highlighted="vm.adder_highlighted" on-date-select="vm.onAdderDateSelect(date)" style="color: blue">+Add date</a>
+ 				<div ng-repeat="date in vm.adder_highlighted">{{date}}</div>
+
 				<h4>on-date-select<br>date='{{vm.date1}}'<br>element='{{vm.dateModel1}}'</h4>
 				<input type="text" date-picker date="vm.date1" ng-model="vm.dateModel1" on-date-select="vm.onDateSelect(date, 'date1')" highlighted="vm.highlighted" />
 

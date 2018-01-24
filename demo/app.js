@@ -40,12 +40,17 @@ function overrideConsole($rootScope) {
 }
 
 function TestController() {
+	this.adder_highlighted = [moment().add(3, 'd').format('YYYY-MM-DD')];
+	this.onAdderDateSelect = function (date) {
+		this.adder_highlighted.push(date);
+	}
+
 	for (let i = 0; i < 20; i++)
 		this['date' + i] = moment().add(i, 'd').format('YYYY-MM-DD');
 
 	this.highlighted = [];
 	for (let i = 0; i < 20; i++)
-		this.highlighted.push(moment().add(i+20, 'd').format('YYYY-MM-DD'));
+		this.highlighted.push(moment().add(i + 20, 'd').format('YYYY-MM-DD'));
 
 	this.date = '2015-12-01';
 	this.start = '2015-12-01';
