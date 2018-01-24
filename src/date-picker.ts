@@ -454,25 +454,8 @@ module DatePickerModule {
             this.allowClose = true;
         }
 
-        get date(): string | Date {
-            return this.$ctrl.date || this.$ctrl.dateInternal.format("YYYY-MM-DD");
-        }
-        set date(value: string | Date) {
-            this.$ctrl.date = value;
-        }
-
-        get start(): string | Date {
-            return this.$ctrl.start || this.date;
-        }
-        set start(value: string | Date) {
-            this.$ctrl.start = value;
-        }
-
-        get end(): string | Date {
-            return this.$ctrl.end || this.start;
-        }
-        set end(value: string | Date) {
-            this.$ctrl.end = value;
+        get defaultDate(): string | Date {
+            return this.$ctrl.defaultDate || moment().format("YYYY-MM-DD");
         }
 
         _onChange: (state: PopoverState, action: string) => void;
@@ -1005,10 +988,19 @@ module DatePickerModule {
             scope['dropdown'] = localScope;
             const datepicker = this.controllerAs;
 
-            var singleDateBinding = `date="dropdown.date" on-date-select="dropdown.setDate(date)"`,
-                rangeBinding = `start="dropdown.start" end="dropdown.end" on-range-select="dropdown.setRange(start,end)"`,
+            var singleDateBinding = `date="datepicker.date" on-date-select="dropdown.setDate(date)"`,
+                rangeBinding = `start="datepicker.start" end="datepicker.end" on-range-select="dropdown.setRange(start,end)"`,
                 bindings = $ctrl.isSingleDate ? singleDateBinding : rangeBinding,
-                template = `<div ng-class="{'datepicker-open':dropdown.isOpen}"><date-picker min-view="${$attrs['minView']}" is-selecting="dropdown.isSelecting" ${bindings}" highlighted="datepicker.highlighted" default-date="{{datepicker.defaultDate}}"></date-picker></div>`;
+                template = `
+                    <div ng-class="{'datepicker-open':dropdown.isOpen}">
+                        <date-picker 
+                            min-view="${$attrs['minView']}" 
+                            is-selecting="dropdown.isSelecting" 
+                            ${bindings}" 
+                            highlighted="datepicker.highlighted" 
+                            default-date="{{dropdown.defaultDate}}">
+                        </date-picker>
+                    </div>`;
 
             const content = angular.element(template);
             content.addClass("datepicker-dropdown");
