@@ -22,11 +22,11 @@ module DatePickerModule {
             this.setViewValue(value);
 
             if (this.initialized) {
-                this.onChange({ time: value });
+                setTimeout(() => this.onChange({ time: value }), 1);
             }
         }
 
-        setViewValue(time: string) {};
+        setViewValue(time: string) { };
         onChange: (params: { time: string }) => void;
         private initialized: boolean;
     }
@@ -70,7 +70,7 @@ module DatePickerModule {
             $ctrl.setViewValue = setViewValue;
 
             $ngModelCtrl.$viewChangeListeners.push(() => {
-                $ctrl.time = this.timePickerService.formatIso($ngModelCtrl.$viewValue, null);
+                $ctrl.time = this.timePickerService.formatIso($ngModelCtrl.$viewValue, null);;
             });
         };
 

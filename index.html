@@ -87,7 +87,7 @@
 	
 				<h4>Input</h4>
 				 <form name="timeForm1">
-					<input name="time1" type="text" time-picker time="vm.time1" ng-model="vm.timeModel1" />
+					<input name="time1" type="text" time-picker time="vm.time1" ng-model="vm.timeModel1" on-change="vm.timeChanged(time)" />
 					<div>time = '{{vm.time1}}'</div>
 					<div ng-if="timeForm1.$invalid">
 						<div ng-if="timeForm1.time1.$error.invalidTime">invalidTime</div>
