@@ -97,10 +97,6 @@ function TestController() {
 		this.onChange5Result = time;
 	}
 
-	this.timeChanged = function(time) {
-		console.log('current: ' + this.time1 + ', actual: ' + time);
-	}
-
 	this.initialized = true;
 }
 
