@@ -22,7 +22,7 @@ module DatePickerModule {
             this.setViewValue(value);
 
             if (this.initialized) {
-                this.onChange({ time: value });
+                setTimeout(() => this.onChange({ time: value }), 1);
             }
         }
 
