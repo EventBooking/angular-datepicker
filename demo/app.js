@@ -14,26 +14,26 @@ function Run($rootScope, isIOS) {
 }
 
 function overrideConsole($rootScope) {
-	var $element = angular.element(`<div></div>`)
+	var $element = angular.element('<div></div>')
 		.addClass("debugConsole");
 	var element = $element.get(0);
 	angular.element('body').append($element);
 
 	var _log = console.log;
-	function log(...arguments) {
-		var values = arguments.map(x => {
+	function log(arguments) {
+		var values = arguments.map(function(x) {
 			if (typeof (x) == "undefined")
 				return "undefined";
 			if (typeof (x) == "object")
 				return JSON.stringify(x);
 			return x;
 		}).join(", ");
-		var $log = angular.element(`<div></div>`)
+		var $log = angular.element('<div></div>')
 			.addClass("debugConsole-log")
 			.text(values);
 		$element.append($log);
 		element.scrollTop = element.scrollHeight;
-		_log(...arguments);
+		_log(arguments);
 	};
 
 	console.log = log;
@@ -104,3 +104,6 @@ angular.module("demo", ["ngAnimate", "ngDatePicker"])
 	.config(Config)
 	.run(Run);
 
+angular.element(function () {
+	angular.bootstrap(document, ['demo']);
+});

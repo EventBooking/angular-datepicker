@@ -1,4 +1,5 @@
-<html ng-app="demo">
+<!DOCTYPE html>
+<html>
 
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable = no">
@@ -19,7 +20,14 @@
 				</div>
 
 				<h4>Add date</h4>
- 				<a href="#" date-picker highlighted="vm.adder_highlighted" on-date-select="vm.onAdderDateSelect(date)" style="color: blue">+Add date</a>
+				<a href="#" date-picker highlighted="vm.adder_highlighted" on-date-select="vm.onAdderDateSelect(date)" style="color: blue">+Add date (anchor)</a>
+				<div date-picker highlighted="vm.adder_highlighted" on-date-select="vm.onAdderDateSelect(date)" style="color: blue">+Add date (div)</div>
+				<div>
+					<label date-picker highlighted="vm.adder_highlighted" on-date-select="vm.onAdderDateSelect(date)" style="color: blue">+Add date (label)</label>
+				</div>
+				<div>
+					<span date-picker highlighted="vm.adder_highlighted" on-date-select="vm.onAdderDateSelect(date)" style="color: blue">+Add date (span)</span>
+				</div>
  				<div ng-repeat="date in vm.adder_highlighted">{{date}}</div>
 
 				<h4>on-date-select<br>date='{{vm.date1}}'<br>element='{{vm.dateModel1}}'</h4>

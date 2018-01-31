@@ -805,6 +805,8 @@ module DatePickerModule {
         }
 
         linkElement($scope: angular.IScope, $element: angular.IAugmentedJQuery, $attrs: angular.IAttributes, ngModelCtrl: angular.INgModelController, $ctrl: DatePickerController) {
+            if($element.is("label"))
+                console.warn("[date-picker] Invalid link element, <label> is incapable of gaining :focus in Firefox/Safari", $element);
             this.setTabIndex($element);
             this.popover($scope, $element, $attrs, $ctrl);
         }
