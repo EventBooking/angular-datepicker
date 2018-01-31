@@ -9,8 +9,8 @@
         "target": "es5",
         "out": "dist/angular-datepicker.js",
         "types": [
-            "angular",
             "jquery",
+            "angular",
             "angular-typescript-module"
         ]
     },

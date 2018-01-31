@@ -930,7 +930,8 @@ module DatePickerModule {
                 const preventBodyMouseUp = () => this.preventDefault(e);
                 preventBodyMouseUp();
 
-                $element.focus();
+                //$element.focus();
+                ($element as JQuery).trigger("focus"); // for firefox
             }
 
             const onElementMouseDown = (e: JQueryEventObject) => {
@@ -942,7 +943,8 @@ module DatePickerModule {
             const onElementMouseUp = (e: JQueryEventObject) => {
                 //console.info('onElementMouseUp');
                 this.preventDefault(e);
-                $element.focus(); // now manually focus
+                //$element.focus(); // now manually focus
+                ($element as JQuery).trigger("focus"); // for firefox
             };
 
             const onElementFocus = (e: JQueryEventObject) => {
