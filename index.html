@@ -9,7 +9,13 @@
 	</head>
 	
 	<body>
-		<div style="display: flex; flex-wrap: wrap;" ng-if="vm.initialized">
+		<div>
+			<form ng-submit="vm.changeLang(vm.lang)">
+				<input type="text" placehold="en-US" ng-model="vm.lang">
+				<button type="submit">Change Language</button>
+			</form>
+		</div>
+		<div style="display: flex; flex-wrap: wrap;" ng-if="vm.displayLang == vm.lang">
 			<div>
 				<h4>Date<br>{{vm.date}}</h4> 
 	
@@ -146,7 +152,7 @@
 		</div>
 	
 		<script type="text/javascript" src="node_modules/jquery/dist/jquery.js"></script>
-		<script type="text/javascript" src="node_modules/moment/moment.js"></script>
+		<script type="text/javascript" src="node_modules/moment/min/moment-with-locales.js"></script>
 		<script type="text/javascript" src="node_modules/tether/dist/js/tether.js"></script>
 		<script type="text/javascript" src="node_modules/angular/angular.js"></script>
 		<script type="text/javascript" src="node_modules/angular-animate/angular-animate.js"></script>

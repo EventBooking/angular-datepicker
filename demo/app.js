@@ -7,7 +7,7 @@ function Config() {
 Run.$inject = ['$rootScope', 'isIOS'];
 
 function Run($rootScope, isIOS) {
-	$rootScope.vm = new TestController();
+	$rootScope.vm = new TestController($rootScope);
 
 	if (isIOS)
 		overrideConsole($rootScope);
@@ -21,7 +21,7 @@ function overrideConsole($rootScope) {
 
 	var _log = console.log;
 	function log(arguments) {
-		var values = arguments.map(function(x) {
+		var values = arguments.map(function (x) {
 			if (typeof (x) == "undefined")
 				return "undefined";
 			if (typeof (x) == "object")
@@ -39,7 +39,7 @@ function overrideConsole($rootScope) {
 	console.log = log;
 }
 
-function TestController() {
+function TestController($rootScope) {
 	this.adder_highlighted = [moment().add(3, 'd').format('YYYY-MM-DD')];
 	this.onAdderDateSelect = function (date) {
 		this.adder_highlighted.push(date);
@@ -59,6 +59,14 @@ function TestController() {
 	this.time1 = '14:05:00';
 	this.time2 = '14:05:00';
 	this.time3 = '14:05:00';
+
+	this.changeLang = function (lang) {
+		moment.locale(lang);
+		this.lang = moment.locale();
+		this.displayLang = this.lang;
+	}
+
+	this.changeLang("en-US");
 
 	this.getMonthYear = function (date) {
 		return moment(date).format("MMMM YYYY");
@@ -97,7 +105,7 @@ function TestController() {
 		this.onChange5Result = time;
 	}
 
-	this.initialized = true;
+	this.initialized = moment().format();
 }
 
 angular.module("demo", ["ngAnimate", "ngDatePicker"])
