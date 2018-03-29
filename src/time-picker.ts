@@ -86,7 +86,10 @@ module DatePickerModule {
                 const isRequired = $attrs['required'];
                 const isValid = !isRequired || (isRequired && isValidTime);
                 $ngModelCtrl.$setValidity('invalidTime', isValid);
+            };
 
+            const updateAndApply = () => {
+                update();
                 $scope.$apply();
             };
 
@@ -99,7 +102,7 @@ module DatePickerModule {
                 if (keyDown(e) !== ENTER_KEY)
                     return;
 
-                update();
+                updateAndApply();
             }
 
             const setViewValue = (time: string) => {
@@ -111,7 +114,7 @@ module DatePickerModule {
             $ctrl.setViewValue = setViewValue;
 
             $element
-                .on(eventId('blur'), update)
+                .on(eventId('blur'), updateAndApply)
                 .on(eventId('keydown'), updateOnEnter);
 
             $scope.$on('$destroy', () => {
