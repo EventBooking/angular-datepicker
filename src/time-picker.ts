@@ -90,6 +90,8 @@ module DatePickerModule {
                 $scope.$apply();
             };
 
+            $scope.$watch(() => $attrs['required'], update);
+
             const updateOnEnter = (e) => {
                 const ENTER_KEY = 13;
                 const keyDown = e => e.which;
