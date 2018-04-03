@@ -79,9 +79,7 @@ module DatePickerModule {
                 return names.map(name => `${name}.${$scope.$id}`).join(' ');
             };
 
-            const update = () => {
-                $ctrl.time = this.timePickerService.formatIso($ngModelCtrl.$modelValue, null);
-
+            const setValidity = () => {
                 const isValidTime = $ctrl.time != null
                 const isRequired = $attrs['required'];
                 const isValid = !isRequired || (isRequired && isValidTime);
@@ -89,11 +87,11 @@ module DatePickerModule {
             };
 
             const updateAndApply = () => {
-                update();
+                $ctrl.time = this.timePickerService.formatIso($ngModelCtrl.$modelValue, null);
                 $scope.$apply();
             };
 
-            $scope.$watch(() => $attrs['required'], update);
+            $scope.$watch(() => $attrs['required'], setValidity);
 
             const updateOnEnter = (e) => {
                 const ENTER_KEY = 13;
@@ -109,6 +107,7 @@ module DatePickerModule {
                 const viewValue = this.timePickerService.format(time);
                 $ngModelCtrl.$setViewValue(viewValue);
                 $ngModelCtrl.$render();
+                setValidity();
             }
 
             $ctrl.setViewValue = setViewValue;
