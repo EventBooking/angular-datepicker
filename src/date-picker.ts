@@ -942,7 +942,7 @@ module DatePickerModule {
 
                 $body.one(events.mouseup, () => {
                     isMouseDown = false;
-                    console.info('onElementMouseDown.bodyMouseUp', e.target);
+                    //console.info('onElementMouseDown.bodyMouseUp', e.target);
                 });
 
                 const preventElementFocus = () => this.preventDefault(e);
