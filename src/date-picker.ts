@@ -935,14 +935,26 @@ module DatePickerModule {
                 $element.focus();
             }
 
+            let isMouseDown = false;
             const onElementMouseDown = (e: JQueryEventObject) => {
-                //console.info('onElementMouseDown');
+                //console.info('onElementMouseDown', e.target);
+                isMouseDown = true;
+
+                $body.one(events.mouseup, () => {
+                    isMouseDown = false;
+                    console.info('onElementMouseDown.bodyMouseUp', e.target);
+                });
+
                 const preventElementFocus = () => this.preventDefault(e);
                 preventElementFocus();
             };
 
             const onElementMouseUp = (e: JQueryEventObject) => {
-                //console.info('onElementMouseUp');
+                //console.info('onElementMouseUp', e.target);
+                const allowFocus = isMouseDown;
+                isMouseDown = false;
+                if(!allowFocus)
+                    return;
                 this.preventDefault(e);
                 $element.focus(); // now manually focus
             };
@@ -962,11 +974,12 @@ module DatePickerModule {
             };
 
             const onBodyUp = (e: JQueryEventObject) => {
+                //console.info('onBodyUp', e);
                 enableElementBlur();
 
                 if (state.isSelecting || !state.isOpen || $element.is(e.target))
                     return;
-                //console.info('onBodyUp', e);
+                
                 state.close();
                 $scope.$apply();
             };
