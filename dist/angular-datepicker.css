@@ -196,7 +196,6 @@
   font-size: 0.75rem;
 }
 .datePickerDays-week {
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   outline: none;
@@ -247,7 +246,6 @@
   display: inline-block;
 }
 .datePickerMonths-row {
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   outline: none;
@@ -305,7 +303,6 @@
   display: inline-block;
 }
 .datePickerYears-row {
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   outline: none;
@@ -354,7 +351,6 @@
   background-color: #8DD0E2;
 }
 date-picker {
-  display: -webkit-inline-box;
   display: -ms-inline-flexbox;
   display: inline-flex;
   background-color: #fff;
@@ -383,15 +379,12 @@ date-picker {
   background-color: rgba(0, 0, 0, 0.25);
 }
 .datepicker-dropdown--isMobile.datepicker-open {
-  display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  -ms-flex-align: center;
+      align-items: center;
 }
 .datepicker-target-attached-bottom.datepicker-dropdown:before,
 .datepicker-target-attached-bottom.datepicker-dropdown:after {
