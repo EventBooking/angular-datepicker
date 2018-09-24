@@ -829,7 +829,7 @@ var DatePickerModule;
                 isMouseDown = true;
                 $body.one(events.mouseup, function () {
                     isMouseDown = false;
-                    console.info('onElementMouseDown.bodyMouseUp', e.target);
+                    //console.info('onElementMouseDown.bodyMouseUp', e.target);
                 });
                 var preventElementFocus = function () { return _this.preventDefault(e); };
                 preventElementFocus();
